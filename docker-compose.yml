@@ -1,0 +1,35 @@
+version: '3.2'
+services:
+    auth_service:
+        build: ./Services/AuthService
+        image: sandhaka/auth_service
+        command: dotnet run --rm
+        ports:
+            - "5000:5000"
+        environment:
+            ASPNETCORE_URLS: http://*:5000
+        depends_on:
+            - db
+        secrets:
+            - jwt-pvt-key
+            - jwt-pub-key
+    db:
+        image: "microsoft/mssql-server-linux"
+        environment:
+            SA_PASSWORD: "password"
+            ACCEPT_EULA: "Y"
+    resource_test_service:
+        build: ./Services/ResourceTestService
+        image: sandhaka/resource_test_service
+        command: dotnet run --rm
+        ports:
+            - "9000:9000"
+        environment:
+            ASPNETCORE_URLS: http://*:9000
+        secrets:
+            - jwt-pub-key
+secrets:
+    jwt-pub-key:
+        file: ./keys/jwtRS256.key.pub
+    jwt-pvt-key: 
+        file: ./keys/jwtRS256.key
