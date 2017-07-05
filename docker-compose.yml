@@ -10,14 +10,17 @@ services:
             ASPNETCORE_URLS: http://*:5000
         depends_on:
             - db
-        secrets:
-            - jwt-pvt-key
-            - jwt-pub-key
     db:
-        image: "microsoft/mssql-server-linux"
+        image: "mysql:latest"
         environment:
-            SA_PASSWORD: "password"
-            ACCEPT_EULA: "Y"
+            - MYSQL_ROOT_PASSWORD=pwd
+            - MYSQL_DATABASE=testdb
+            - MYSQL_USER=sandhaka
+            - MYSQL_PASSWORD=pwd
+        volumes:
+            - $HOME/data/db-auth:/var/lib/mysql
+        ports:
+            - "3306:3306"
     resource_test_service:
         build: ./Services/ResourceTestService
         image: sandhaka/resource_test_service
@@ -26,10 +29,3 @@ services:
             - "9000:9000"
         environment:
             ASPNETCORE_URLS: http://*:9000
-        secrets:
-            - jwt-pub-key
-secrets:
-    jwt-pub-key:
-        file: ./keys/jwtRS256.key.pub
-    jwt-pvt-key: 
-        file: ./keys/jwtRS256.key
