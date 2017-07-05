@@ -8,6 +8,7 @@ services:
             - "5000:5000"
         environment:
             ASPNETCORE_URLS: http://*:5000
+            CONNECTION_STRING: "Server=db; Port=3306; Database=testdb; Uid=sandhaka; Password=pwd"
         depends_on:
             - db
     db:

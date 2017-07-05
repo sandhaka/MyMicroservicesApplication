@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="Matteo Tosato" id="1">
+
+	<comment>
+		test user table
+	</comment>
+
+	<createTable tableName="TBU_users">
+		<column name="id" type="UUID">
+			<constraints nullable="false" primaryKey="true"/>
+		</column>
+		<column name="username" type="NVARCHAR(128)" >
+			<constraints nullable="false"/>
+		</column>
+		<column name="password" type="NVARCHAR(128)" >
+			<constraints nullable="false"/>
+		</column>
+		<column name="name_full" type="NVARCHAR(255)" >
+			<constraints nullable="false"/>
+		</column>
+		<column name="level" type="INT" >
+			<constraints nullable="false"/>
+		</column>
+	</createTable>
+
+  </changeSet>
+
+  <changeSet author="Matteo Tosato" id="2">
+
+  	<comment>
+		add admin
+	</comment>
+
+	<sql>
+		insert into TBU_users (id, username, password, name_full, level) values (UUID(), "admin", MD5('admin'), "administrator", "0")
+	</sql>
+
+	<rollback>
+		<sql>
+			delete from TBU_users
+		</sql>
+	</rollback>
+
+  </changeSet>
+
+  <changeSet author="Matteo Tosato" id="3">
+	<tagDatabase tag="initial_version" />
+  </changeSet>
+
+</databaseChangeLog>
