@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AuthService.DbModels;
+﻿using AuthService.Repository.Users;
+using AuthService.Repository.Users.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace AuthService
 {
-    public class Startup
+    public partial class Startup
     {
         public Startup(IHostingEnvironment env)
         {
@@ -29,6 +25,9 @@ namespace AuthService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add DI support
+            SetupDI(services);
+            
             // Add framework services.
             services.AddMvc();
         }
@@ -38,8 +37,19 @@ namespace AuthService
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            
+            ConfigureAuth(app);
 
             app.UseMvc();
+        }
+
+        /// <summary>
+        /// Setup dependency injection for the services
+        /// </summary>
+        /// <param name="services"></param>
+        private void SetupDI(IServiceCollection services)
+        {
+            services.AddTransient<IUserRepository, UserRepository>();
         }
     }
 }

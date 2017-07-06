@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AuthService.DbModels;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace AuthService.Repository.Users
+namespace AuthService.Repository.Users.Impl
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
-        public static DbUser GetDbModel(string userId)
+        public IDbUser GetDbModel(string userId)
         {
             var context = TestDbContextFactory.Create();
             
             return context.TBU_users.FirstOrDefault(i => i.id.Equals(userId));
         }
-        
-        public static IEnumerable<DbUser> GetAdmins()
+
+        public IEnumerable<IDbUser> GetAllUsers()
         {
             var context = TestDbContextFactory.Create();
-            
-            return context.TBU_users.Where(i => i.level == 0);
+
+            return context.TBU_users;
         }
     }
 }

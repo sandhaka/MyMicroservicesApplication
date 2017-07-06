@@ -49,4 +49,21 @@
 	<tagDatabase tag="initial_version" />
   </changeSet>
 
+  <changeSet author="Matteo Tosato" id="4">
+  
+	  <comment> 
+		Set username as unique field
+	  </comment>
+  
+	<addUniqueConstraint 
+		constraintName="TBU_USERS_username_unique"
+		columnNames="username" 
+		tableName="TBU_users"/>
+		
+	<rollback>
+		<dropUniqueConstraint constraintName="TBU_USERS_username_unique" tableName="TBU_users" />
+	</rollback>
+		
+  </changeSet>
+  
 </databaseChangeLog>

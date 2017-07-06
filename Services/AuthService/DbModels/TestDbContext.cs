@@ -1,6 +1,5 @@
-﻿using System;
+﻿using AuthService.DbModels.Impl;
 using Microsoft.EntityFrameworkCore;
-using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace AuthService.DbModels
 {

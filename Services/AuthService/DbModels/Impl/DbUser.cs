@@ -1,6 +1,6 @@
-﻿namespace AuthService.DbModels
+﻿namespace AuthService.DbModels.Impl
 {
-    public class DbUser
+    public class DbUser : IDbUser
     {
         public string id { get; set; }
         public string username { get; set; }
