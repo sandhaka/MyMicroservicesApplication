@@ -43,10 +43,10 @@ namespace AuthService.Security
                 return context.Response.WriteAsync("Bad request.");
             }
 
-            return GenerateToken(context);
+            return GenerateTokenAsync(context);
         }
 
-        private async Task GenerateToken(HttpContext context)
+        private async Task GenerateTokenAsync(HttpContext context)
         {
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];

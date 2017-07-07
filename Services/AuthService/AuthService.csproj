@@ -8,6 +8,12 @@
       <Version>1.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Rewrite">
+      <Version>1.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https">
+      <Version>1.1.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
       <Version>1.1.2</Version>
     </PackageReference>
@@ -24,5 +30,8 @@
       <Link>keys\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="certificate" />
   </ItemGroup>
 </Project>

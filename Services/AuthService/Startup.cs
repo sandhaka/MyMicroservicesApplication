@@ -2,6 +2,8 @@
 using AuthService.Repository.Users.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,6 +32,10 @@ namespace AuthService
             
             // Add framework services.
             services.AddMvc();
+            
+            // Add https features
+            services.Configure<MvcOptions>(options =>
+                options.Filters.Add(new RequireHttpsAttribute()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +43,10 @@ namespace AuthService
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            
+            var options = new RewriteOptions()
+                .AddRedirectToHttps();
+            app.UseRewriter(options);
             
             ConfigureAuth(app);
 
