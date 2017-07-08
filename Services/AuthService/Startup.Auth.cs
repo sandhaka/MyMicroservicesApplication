@@ -7,8 +7,10 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using AuthService.Repository;
+using AuthService.Repository.Users.Impl;
 using AuthService.Security;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -46,57 +48,22 @@ namespace AuthService
             });
 
             // Setup Token provider
-            var tokenProviderOptions = new TokenProviderOptions
+            var tokenProviderOptions = new TokenProviderOptions()
             {
-                Path = Configuration.GetSection("TokenAuthentication:TokenPath").Value,
+                Path = "/api/token",
                 Audience = Configuration.GetSection("TokenAuthentication:Audience").Value,
                 Issuer = Configuration.GetSection("TokenAuthentication:Issuer").Value,
                 SigningCredentials = new SigningCredentials(new RsaSecurityKey(_privateKey), SecurityAlgorithms.RsaSha256),
-                IdentityResolver = GetIdentity
+                IdentityResolver = UserRepository.GetIdentityAsync
             };
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(tokenProviderOptions));
-        }
-        
-        /// <summary>
-        /// This method check the user credentials
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns>User claims</returns>
-        private static async Task<ClaimsIdentity> GetIdentity(string username, string password)
-        {
-            ClaimsIdentity cIdentity = null;
             
-            using (var context = TestDbContextFactory.Create())
+            // Setup Token renew options
+            var tokenRenewOptions = new TokenRenewOptions()
             {
-                var user = await context.TBU_users.FirstOrDefaultAsync(i => i.username == username);
-                
-                if (user != null)
-                {
-                    using (var md5Hash = MD5.Create())
-                    {
-                        var hash = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-                        var sBuilder = new StringBuilder();
-                        
-                        foreach (var t in hash)
-                        {
-                            sBuilder.Append(t.ToString("x2"));
-                        }
-                        
-                        if (user.password.Equals(sBuilder.ToString()))
-                        {
-                            cIdentity = new ClaimsIdentity(
-                                new GenericIdentity(username, "Token"),
-                                new Claim[]
-                                {
-                                    new Claim("Admin", user.level == 0 ? "true": "false")
-                                });
-                        }
-                    }
-                }
-            }
-
-            return cIdentity;
+                Path = "/api/tokenrenew"
+            };
+            app.UseMiddleware<TokenRenewMiddleware>(Options.Create(tokenRenewOptions));
         }
     }
 }

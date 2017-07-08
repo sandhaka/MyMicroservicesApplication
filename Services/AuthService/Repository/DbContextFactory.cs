@@ -5,9 +5,16 @@ using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace AuthService.Repository
 {
-    public static class TestDbContextFactory
+    /// <summary>
+    /// Factory for contexts
+    /// </summary>
+    public static class DbContextFactory
     {
-        public static TestDbContext Create()
+        /// <summary>
+        /// Create a new context for 'TestDb'
+        /// </summary>
+        /// <returns>Db context</returns>
+        public static TestDbContext CreateTestDbContext()
         {
             var optionsBuilder = new DbContextOptionsBuilder<TestDbContext>();
             optionsBuilder.UseMySQL(Environment.GetEnvironmentVariable("CONNECTION_STRING"));
