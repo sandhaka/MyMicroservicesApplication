@@ -13,7 +13,7 @@ namespace AuthService
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
-                .UseKestrel(options => options.UseHttps("../../certificate/certificate.pfx", "password"))
+                .UseKestrel(options => options.UseHttps("certificate/certificate.pfx", "password"))
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseUrls("https://*:5000")

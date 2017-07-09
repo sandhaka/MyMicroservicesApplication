@@ -32,6 +32,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="certificate" />
+     <Content Include="certificate\**\*.*">
+      <Link>certificate\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
