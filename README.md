@@ -2,6 +2,7 @@
 ---
 *Work in progress*
 --
+![alt text](http://turnoff.us/image/en/monolith-retirement.png)
 ### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).
 
@@ -53,8 +54,11 @@ $ docker-compose -c docker-compose.dev.yml build
 ```sh
 $ docker-compose -c docker-compose.dev.yml up
 ```
-
-### Hot to debug a remote container:
+or build run and detach
+```sh
+$ docker-compose -c docker-compose.dev.yml up --build -d
+```
+### How to debug a remote container:
 For example, to debug the auth_service: look at the Dockerfile.debug version. I added the sshd support. Then you can attach remotely over a ssh tunnel with your ide. Notes the port mapping '2222:22' to avoid conflicts with the host's ssh server.
 
 Use the correct version of docker-compose file to overwrite the configurations, like:
