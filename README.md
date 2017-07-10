@@ -55,7 +55,7 @@ $ docker-compose -c docker-compose.dev.yml up
 ```
 
 ## Hot to debug a running container:
-For example, to debug the auth_service: look at the Dockerfile.debug version. I added the sshd support. Then you can attach remotely over a ssh tunnel with your ide. Note the mapping port 2222:22 to avoid conflicts with the host's ssh server.
+For example, to debug the auth_service: look at the Dockerfile.debug version. I added the sshd support. Then you can attach remotely over a ssh tunnel with your ide. Notes the port mapping '2222:22' to avoid conflicts with the host's ssh server.
 
 Use the correct version of docker-compose file to overwrite the configuration for the debug version settings, like:
 ```sh
@@ -63,16 +63,16 @@ $ docker-compose -c docker-compose.dev.yml -c docker-compose.debug.yml up --buil
 ```
 Execute the ssh server on the container
 ```sh
-$ docker exec -it container-id "bash"  
+$ docker exec -it <container-id> "/usr/sbin/sshd"  
 ```
-Copy the ssh key to the docker container
+Copy the ssh key to the docker container, look into the 'scripts' folder.
 ```sh
- $ ssh-copy-id -p 2222 -i your_public_key.pub -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" root@192.168.104.100
+ $ ssh-copy-id -p 2222 -i your_public_key.pub -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" root@<docker-host-ip>
  ```
 ```sh
 $ /usr/sbin/sshd
 ```
-If you are using vs code, use the launch.json settings to attach to the remote container and select the correct process (example configuration).
+If you are using vs code, you can now use the launch.json settings to attach to the remote container and select the correct process (example configuration).
 ```json
 {
     "version": "0.2.0",
