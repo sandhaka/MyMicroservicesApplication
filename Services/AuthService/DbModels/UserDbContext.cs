@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.DbModels
 {
-    public class TestDbContext : DbContext
+    public class UserDbContext : DbContext
     {
-        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options) {}
+        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) {}
         
         public DbSet<DbUser> TBU_users {get; set; }
     }

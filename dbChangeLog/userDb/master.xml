@@ -6,6 +6,6 @@
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 
-<include file="initial_setup.xml" />
+<include file="userDb/initial_setup.xml" />
 	
 </databaseChangeLog>

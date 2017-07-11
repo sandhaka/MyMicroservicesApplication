@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthService.Controllers
 {
+    /// <summary>
+    /// Test class
+    /// </summary>
     [Route("api/[controller]")]
     public class AuthController : Controller
     {

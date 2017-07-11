@@ -14,12 +14,12 @@ namespace AuthService.Repository
         /// Create a new context for 'TestDb'
         /// </summary>
         /// <returns>Db context</returns>
-        public static TestDbContext CreateTestDbContext()
+        public static UserDbContext CreateTestDbContext()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TestDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
             optionsBuilder.UseMySQL(Environment.GetEnvironmentVariable("CONNECTION_STRING"));
  
-            var context = new TestDbContext(optionsBuilder.Options);
+            var context = new UserDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
  
             return context;

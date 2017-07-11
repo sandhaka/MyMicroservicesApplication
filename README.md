@@ -26,7 +26,6 @@ And build the project:
 ```sh
 $ dotnet publish
 ```
-
 You have to generate a private/public keys for JWT:
 ```sh
 openssl genrsa -des3 -out private.pem 2048

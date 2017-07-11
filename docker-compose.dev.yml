@@ -8,20 +8,18 @@ services:
             - "5000:5000"
         environment:
             ASPNETCORE_URLS: http://*:5000
-            CONNECTION_STRING: "Server=db; Port=3306; Database=testdb; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=user_db; Port=3306; Database=userdb; Uid=sandhaka; Password=pwd"
         depends_on:
-            - db
-    db:
+            - user_db
+    user_db:
         image: "mysql:latest"
         environment:
             - MYSQL_ROOT_PASSWORD=pwd
-            - MYSQL_DATABASE=testdb
+            - MYSQL_DATABASE=userdb
             - MYSQL_USER=sandhaka
             - MYSQL_PASSWORD=pwd
         volumes:
-            - $HOME/data/db-auth:/var/lib/mysql
-        ports:
-            - "3306:3306"
+            - $HOME/data/userdb:/var/lib/mysql
     resource_test_service:
         build: ./Services/ResourceTestService
         image: sandhaka/resource_test_service
