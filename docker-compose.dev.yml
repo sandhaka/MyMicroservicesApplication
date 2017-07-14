@@ -2,7 +2,7 @@ version: '3.2'
 services:
     auth:
         build: ./Services/AuthService
-        image: sandhaka/mymicsapp_service
+        image: sandhaka/mymicsapp_auth
         command: dotnet run --rm
         ports:
             - "5000:443"
