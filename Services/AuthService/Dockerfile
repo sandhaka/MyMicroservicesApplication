@@ -4,6 +4,6 @@ FROM microsoft/aspnetcore:1.1
 WORKDIR /app
 COPY bin/Debug/netcoreapp1.1/publish /app
 
-EXPOSE 5000
+EXPOSE 443
 
 ENTRYPOINT /bin/bash -c "dotnet AuthService.dll"

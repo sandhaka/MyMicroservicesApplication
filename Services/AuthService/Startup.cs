@@ -1,5 +1,7 @@
 ﻿using AuthService.Repository.Users;
-using AuthService.Repository.Users.Impl;
+using AuthService.DbModels;
+using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace AuthService
 {
@@ -27,6 +30,21 @@ namespace AuthService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+            if (string.IsNullOrEmpty(connectionString))
+                connectionString = Configuration.GetConnectionString("DefaultConnection");
+            
+            services.AddDbContext<IdentityContext>(options =>
+            {
+                options.UseMySQL(
+                    connectionString,
+                    opts =>
+                    {
+                        opts.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                    });
+            });
+            
             // Add DI support
             SetupDI(services);
             
@@ -51,6 +69,8 @@ namespace AuthService
             ConfigureAuth(app);
 
             app.UseMvc();
+
+            new UserDbContextSeed().SeedAsync(app).Wait();
         }
 
         /// <summary>

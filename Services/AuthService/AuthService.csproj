@@ -17,13 +17,17 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore">
       <Version>1.1.2</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore">
-      <Version>7.0.7-m61</Version>
+      <Version>8.0.8-dmr</Version>
     </PackageReference>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt">
       <Version>5.1.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="keys\**\*.*">
@@ -32,7 +36,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-     <Content Include="certificate\**\*.*">
+    <Content Include="certificate\**\*.*">
       <Link>certificate\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

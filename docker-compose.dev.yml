@@ -1,30 +1,35 @@
 version: '3.2'
 services:
-    auth_service:
+    auth:
         build: ./Services/AuthService
-        image: sandhaka/auth_service
+        image: sandhaka/mymicsapp_service
         command: dotnet run --rm
         ports:
-            - "5000:5000"
+            - "5000:443"
         environment:
-            ASPNETCORE_URLS: http://*:5000
-            CONNECTION_STRING: "Server=user_db; Port=3306; Database=userdb; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp_identity; Uid=sandhaka; Password=pwd"
         depends_on:
-            - user_db
-    user_db:
+            - mysql.data
+    orders:
+        build: ./Services/Orders/Orders.Application
+        image: "sandhaka/mymicsapp_orders"
+        command: dotnet run --rm
+        ports:
+            - "9000:443"
+        environment:
+            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp_identity; Uid=sandhaka; Password=pwd"
+        depends_on:
+            - mysql.data
+    # I'm goind to use the same database for all the services but keep the aggregates separate. 
+    # In a production environment I'll plan to use a dedicated one for each microservice
+    mysql.data:
         image: "mysql:latest"
         environment:
             - MYSQL_ROOT_PASSWORD=pwd
-            - MYSQL_DATABASE=userdb
+            - MYSQL_DATABASE=mymicsapp_identity
             - MYSQL_USER=sandhaka
             - MYSQL_PASSWORD=pwd
         volumes:
-            - $HOME/data/userdb:/var/lib/mysql
-    resource_test_service:
-        build: ./Services/ResourceTestService
-        image: sandhaka/resource_test_service
-        command: dotnet run --rm
+            - $HOME/data/mymicsapp_identity:/var/lib/mysql
         ports:
-            - "9000:9000"
-        environment:
-            ASPNETCORE_URLS: http://*:9000
+            - "3306:3306"

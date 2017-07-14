@@ -15,7 +15,7 @@ Initial incpit from this [discussion](https://stackoverflow.com/questions/267391
 ### Database:
 I use MySQL to keep users informations running on the 'db' container with a mapping volume on the host machine.
 
-Liquibase to database versioning, look at the dbChangeLog folder.
+dotnet-ef migrations to database versioning.
 
 ### Requirements
 For each aspnet core service you may need to restore packages:

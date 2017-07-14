@@ -1,6 +1,6 @@
 version: '3.2'
 services:
-    auth_service:
+    auth:
         build: 
           context: ./Services/AuthService
           dockerfile: Dockerfile.debug
