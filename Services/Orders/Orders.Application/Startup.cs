@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
+using Amazon.SQS;
+using EventBus.Abstractions;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Orders.Domain.AggregatesModel.OrderAggregate;
+using Orders.Infrastructure;
+using Orders.Infrastructure.Repositories;
 
-namespace Orders.Api
+namespace Orders.Application
 {
-    public class Startup
+    public partial class Startup
     {
         public Startup(IHostingEnvironment env)
         {
@@ -27,8 +33,38 @@ namespace Orders.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Take connection string from environment varible by default
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+            // Otherwise take from the local configuration (service testing)
+            if (string.IsNullOrEmpty(connectionString))
+                connectionString = Configuration.GetConnectionString("DefaultConnection");
+            
+            services.AddDbContext<OrdersContext>(options =>
+            {
+                options.UseMySql(
+                    connectionString,
+                    opts =>
+                    {
+                        opts.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                    });
+            });
+            
             // Add framework services.
             services.AddMvc();
+
+            // Dependency injection
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            
+            // Amazon SQS setup
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonSQS>();
+            services.AddSingleton<IEventBus, EventBusAwsSqs.EventBusAwsSqs>();
+
+            services.AddOptions();
+
+            // MediatR config
+            services.AddMediatR(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +72,12 @@ namespace Orders.Api
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            
+            var options = new RewriteOptions()
+                .AddRedirectToHttps();
+            app.UseRewriter(options);
+            
+            ConfigureAuth(app);
 
             app.UseMvc();
         }

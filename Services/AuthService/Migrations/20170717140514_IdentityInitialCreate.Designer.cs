@@ -8,8 +8,8 @@ using AuthService.DbModels;
 namespace AuthService.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20170714212510_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20170717140514_IdentityInitialCreate")]
+    partial class IdentityInitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,7 @@ namespace AuthService.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("applicationusers","mymicsapp_identity");
+                    b.ToTable("applicationusers","mymicsapp.Services.identityDb");
                 });
         }
     }

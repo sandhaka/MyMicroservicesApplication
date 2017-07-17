@@ -4,21 +4,22 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace AuthService.DbModels
 {
+    /// <summary>
+    /// Init database with default values
+    /// </summary>
     public class UserDbContextSeed
     {
-        public async Task SeedAsync(IApplicationBuilder applicationBuilder, int retry = 0)
+        public async Task SeedAsync(IApplicationBuilder applicationBuilder, ILoggerFactory loggerFactory, int retry = 0)
         {
             var retryForAvailability = retry;
             try
             {
                 var context =
                     (IdentityContext) applicationBuilder.ApplicationServices.GetService(typeof(IdentityContext));
-                
-                context.Database.Migrate();
 
                 if (!context.ApplicationUsers.Any())
                 {
@@ -28,10 +29,13 @@ namespace AuthService.DbModels
             }
             catch (Exception exception)
             {
+                var log = loggerFactory.CreateLogger("orders seed");
+                log.LogError(exception.Message);
+                
                 if (retryForAvailability < 10)
                 {
                     retryForAvailability++;
-                    await SeedAsync(applicationBuilder, retryForAvailability);
+                    await SeedAsync(applicationBuilder,loggerFactory, retryForAvailability);
                 }
             }
         }

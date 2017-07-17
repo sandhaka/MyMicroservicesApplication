@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using AuthService.DbModels;
 
 namespace AuthService.Migrations
@@ -32,7 +29,7 @@ namespace AuthService.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("applicationusers","mymicsapp_identity");
+                    b.ToTable("applicationusers","mymicsapp.Services.identityDb");
                 });
         }
     }

@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace AuthService
 {
@@ -30,14 +30,16 @@ namespace AuthService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Take connection string from environment varible by default
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
+            // Otherwise take from the local configuration (service testing)
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Configuration.GetConnectionString("DefaultConnection");
             
             services.AddDbContext<IdentityContext>(options =>
             {
-                options.UseMySQL(
+                options.UseMySql(
                     connectionString,
                     opts =>
                     {
@@ -70,7 +72,7 @@ namespace AuthService
 
             app.UseMvc();
 
-            new UserDbContextSeed().SeedAsync(app).Wait();
+            new UserDbContextSeed().SeedAsync(app, loggerFactory).Wait();
         }
 
         /// <summary>

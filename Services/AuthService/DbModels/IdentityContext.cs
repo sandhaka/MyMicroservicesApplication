@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AuthService.DbModels
 {
+    /// <summary>
+    /// Database context
+    /// </summary>
     public class IdentityContext : DbContext
     {
-        private const string DefaultSchema = "mymicsapp_identity";
+        private const string DefaultSchema = "mymicsapp.Services.identityDb";
         
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) {}
         

@@ -19,9 +19,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
-    <PackageReference Include="MySql.Data.EntityFrameworkCore">
-      <Version>8.0.8-dmr</Version>
-    </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="1.1.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt">
       <Version>5.1.4</Version>
     </PackageReference>
@@ -40,5 +38,8 @@
       <Link>certificate\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers" />
   </ItemGroup>
 </Project>

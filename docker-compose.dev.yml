@@ -7,7 +7,7 @@ services:
         ports:
             - "5000:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp_identity; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.identityDb; Uid=sandhaka; Password=pwd"
         depends_on:
             - mysql.data
     orders:
@@ -17,7 +17,7 @@ services:
         ports:
             - "9000:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp_identity; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.ordersDb; Uid=sandhaka; Password=pwd"
         depends_on:
             - mysql.data
     # I'm goind to use the same database for all the services but keep the aggregates separate. 
@@ -26,10 +26,9 @@ services:
         image: "mysql:latest"
         environment:
             - MYSQL_ROOT_PASSWORD=pwd
-            - MYSQL_DATABASE=mymicsapp_identity
             - MYSQL_USER=sandhaka
             - MYSQL_PASSWORD=pwd
         volumes:
-            - $HOME/data/mymicsapp_identity:/var/lib/mysql
+            - $HOME/data/mymicsapp_db:/var/lib/mysql
         ports:
             - "3306:3306"

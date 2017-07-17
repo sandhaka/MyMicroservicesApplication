@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AuthService.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class IdentityInitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "mymicsapp_identity");
+                name: "mymicsapp.Services.identityDb");
 
             migrationBuilder.CreateTable(
                 name: "applicationusers",
-                schema: "mymicsapp_identity",
+                schema: "mymicsapp.Services.identityDb",
                 columns: table => new
                 {
                     id = table.Column<string>(nullable: false),
@@ -32,7 +30,7 @@ namespace AuthService.Migrations
         {
             migrationBuilder.DropTable(
                 name: "applicationusers",
-                schema: "mymicsapp_identity");
+                schema: "mymicsapp.Services.identityDb");
         }
     }
 }

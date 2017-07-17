@@ -2,3 +2,4 @@ obj/
 bin/
 keys/
 certificate/
+aws.dev/
