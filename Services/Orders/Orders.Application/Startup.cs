@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using Amazon.SQS;
-using EventBus.Abstractions;
+using Amazon.SimpleNotificationService;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,12 +53,12 @@ namespace Orders.Application
             services.AddMvc();
 
             // Dependency injection
-            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */
+            //services.AddSingleton<IEventBus, >();    /* Interface for the event bus */ 
             
-            // Amazon SQS setup
+            // Amazon setup
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-            services.AddAWSService<IAmazonSQS>();
-            services.AddSingleton<IEventBus, EventBusAwsSqs.EventBusAwsSqs>();
+            services.AddAWSService<IAmazonSimpleNotificationService>();
 
             services.AddOptions();
 
