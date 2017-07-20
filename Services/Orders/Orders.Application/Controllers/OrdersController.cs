@@ -8,7 +8,7 @@ using Orders.Application.Commands;
 namespace Orders.Application.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+//    [Authorize]
     public class OrdersController : Controller
     {
         private readonly IMediator _mediator;

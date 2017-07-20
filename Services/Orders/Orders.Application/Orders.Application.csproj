@@ -7,7 +7,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.3" />
+    <PackageReference Include="AWSSDK.IdentityManagement" Version="3.3.4.3" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.0.20" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.3.2.7" />
     <PackageReference Include="MediatR" Version="3.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
@@ -20,6 +22,8 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj" />
+    <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
     <ProjectReference Include="..\Orders.Infrastructure\Orders.Infrastructure.csproj" />
   </ItemGroup>

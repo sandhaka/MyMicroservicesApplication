@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using Amazon.SimpleNotificationService;
+using Amazon.SQS;
+using EventBus;
+using EventBus.Abstractions;
+using EventBusAwsSns;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Orders.Application.IntegrationEvents;
+using Orders.Application.IntegrationEvents.Events;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;
 using Orders.Infrastructure.Repositories;
@@ -28,7 +34,7 @@ namespace Orders.Application
         }
 
         public IConfigurationRoot Configuration { get; }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -54,12 +60,18 @@ namespace Orders.Application
 
             // Dependency injection
             services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */
-            //services.AddSingleton<IEventBus, >();    /* Interface for the event bus */ 
-            
+            services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /**/
+           
             // Amazon setup
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonSimpleNotificationService>();
-
+            services.AddAWSService<IAmazonSQS>();
+            
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>();
+            
+            RegisterIntegrationEventHandlers(services);
+            
             services.AddOptions();
 
             // MediatR config
@@ -77,8 +89,24 @@ namespace Orders.Application
             app.UseRewriter(options);
             
             ConfigureAuth(app);
+            ConfigureEventBus(app);
 
             app.UseMvc();
+        }
+
+        private void ConfigureEventBus(IApplicationBuilder app)
+        {
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
+            // TODO: Move to another microservice
+            eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandlerTest>(() =>
+                app.ApplicationServices.GetRequiredService<OrderStartedIntegrationEventHandlerTest>());
+        }
+
+        // TODO: Move to another microservice
+        private void RegisterIntegrationEventHandlers(IServiceCollection services)
+        {
+            services.AddTransient<OrderStartedIntegrationEventHandlerTest>();
         }
     }
 }

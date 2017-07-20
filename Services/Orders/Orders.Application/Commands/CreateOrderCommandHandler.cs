@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using EventBus.Abstractions;
 using MediatR;
+using Newtonsoft.Json;
+using Orders.Application.IntegrationEvents.Events;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 
 namespace Orders.Application.Commands
@@ -11,13 +15,13 @@ namespace Orders.Application.Commands
     public class CreateOrderCommandHandler 
         : IAsyncRequestHandler<CreateOrderCommand, bool>
     {
-        private readonly IMediator _mediator;
         private readonly IOrderRepository _orderRepository;
+        private readonly IEventBus _eventBus;
         
-        public CreateOrderCommandHandler(IMediator mediator, IOrderRepository orderRepository)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository, IEventBus eventBus)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
         }
 
         /// <summary>
@@ -29,14 +33,27 @@ namespace Orders.Application.Commands
         {
             var order = new Order();
 
+            // Add order items
             foreach (var orderItem in createOrderCommand.OrderItems)
             {
                 order.AddOrderItem(orderItem.ProductId, orderItem.ProductName, orderItem.UnitPrice, orderItem.Units);
             }
-
+            
+            // Save the new order on the db
             _orderRepository.Add(order);
+            var result = await _orderRepository.UnitOfWork.SaveEntitiesAsync();
 
-            return await _orderRepository.UnitOfWork.SaveEntitiesAsync();
+            // Publish new order as integration event
+            await _eventBus.PublishAsync<OrderStartedIntegrationEvent>(
+                JsonConvert.SerializeObject(
+                    new OrderStartedIntegrationEvent(
+                        Guid.NewGuid(),   
+                        DateTime.UtcNow, 
+                        order.Id)             
+                ), CancellationToken.None
+            );
+
+            return result;
         }
     }
 }

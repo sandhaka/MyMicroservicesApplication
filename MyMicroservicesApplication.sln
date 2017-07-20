@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{F4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EcosystemBlocks\EventBus\EventBus\EventBus.csproj", "{A04922E2-BBD8-47D9-BA55-C36CE5B15753}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusAwsSns", "EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj", "{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{A04922E2-BBD8-47D9-BA55-C36CE5B15753}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A04922E2-BBD8-47D9-BA55-C36CE5B15753}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A04922E2-BBD8-47D9-BA55-C36CE5B15753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +71,6 @@ Global
 		{8A14C1F8-47BE-4044-B783-BB08FC7DABC9} = {36648EFB-9AE5-46F6-AD0F-92DA914CF338}
 		{F4352AF8-28D1-44E4-93DA-8248A0FC664D} = {C4FBB18F-1F3D-4884-885B-D47725823358}
 		{A04922E2-BBD8-47D9-BA55-C36CE5B15753} = {F4352AF8-28D1-44E4-93DA-8248A0FC664D}
+		{98F4D1EE-1F33-46E6-A48F-DBD54D92868D} = {F4352AF8-28D1-44E4-93DA-8248A0FC664D}
 	EndGlobalSection
 EndGlobal

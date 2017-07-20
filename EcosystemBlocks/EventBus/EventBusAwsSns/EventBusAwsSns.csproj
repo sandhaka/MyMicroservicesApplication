@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EventBus\EventBus.csproj">
+      <Project>{A04922E2-BBD8-47D9-BA55-C36CE5B15753}</Project>
+      <Name>EventBus</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.IdentityManagement" Version="3.3.4.3" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.0.20" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.3.2.7" />
+  </ItemGroup>
+</Project>
