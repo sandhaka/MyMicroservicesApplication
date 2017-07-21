@@ -46,6 +46,8 @@ See this [link](https://www.ssl.com/how-to/create-a-pfx-p12-certificate-file-usi
 
 Install this certificate in your dev computer.
 
+Setup AWS credentials into a file (MyMicroservicesApplication\Services\Orders\Orders.Application\aws.dev\credentials): [Guide](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html)
+
 ### How to run the solution:
 ```sh
 $ docker-compose -c docker-compose.dev.yml build
