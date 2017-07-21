@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orders.Application.Commands;
+using Orders.Application.ExceptionHandling;
 using Orders.Application.IntegrationEvents;
 using Orders.Application.IntegrationEvents.Events;
 using Orders.Application.Validation;
@@ -58,8 +59,12 @@ namespace Orders.Application
                     });
             });
             
-            // Setup MVC with Fluent Validation library
-            services.AddMvc().AddFluentValidation();
+            // Setup MVC 
+            services.AddMvc( options =>
+            {
+                options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
+            })
+                .AddFluentValidation(); /* Using Fluent validation */
 
             // Adding services to DI container
             services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */

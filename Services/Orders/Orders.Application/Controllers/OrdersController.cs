@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Application.Commands;
 
 namespace Orders.Application.Controllers
 {
     [Route("api/[controller]")]
-//    [Authorize]
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly IMediator _mediator;
