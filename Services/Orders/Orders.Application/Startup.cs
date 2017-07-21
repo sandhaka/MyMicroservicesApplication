@@ -4,7 +4,8 @@ using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using EventBus;
 using EventBus.Abstractions;
-using EventBusAwsSns;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,8 +14,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Orders.Application.Commands;
 using Orders.Application.IntegrationEvents;
 using Orders.Application.IntegrationEvents.Events;
+using Orders.Application.Validation;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;
 using Orders.Infrastructure.Repositories;
@@ -55,27 +58,32 @@ namespace Orders.Application
                     });
             });
             
-            // Add framework services.
-            services.AddMvc();
+            // Setup MVC with Fluent Validation library
+            services.AddMvc().AddFluentValidation();
 
-            // Dependency injection
+            // Adding services to DI container
             services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */
-            services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /**/
+            services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
+            services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
            
-            // Amazon setup
-            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-            services.AddAWSService<IAmazonSimpleNotificationService>();
-            services.AddAWSService<IAmazonSQS>();
+            // Amazon services setup
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions()); /* Setup credentails and others options */
+            services.AddAWSService<IAmazonSimpleNotificationService>(); /* Amazon SNS */
+            services.AddAWSService<IAmazonSQS>(); /* Amazon SQS */
             
-            services.AddSingleton<IConfiguration>(Configuration);
-            services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>();
+            services.AddSingleton<IConfiguration>(Configuration); /* Make project configuration available */
             
+            // Register all integration event handlers for this microservice
             RegisterIntegrationEventHandlers(services);
             
             services.AddOptions();
 
             // MediatR config
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+            
+            // Command validation:
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorPipeline<,>)); /* Validation pipline (MediatR) */
+            services.AddTransient<IValidator<CreateOrderCommand>, CreateOrderCommandValidator>(); /* Adding fluent validator to DI container */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,12 +106,12 @@ namespace Orders.Application
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-            // TODO: Move to another microservice
+            // TODO: Move to another microservice (here for testing)
             eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandlerTest>(() =>
                 app.ApplicationServices.GetRequiredService<OrderStartedIntegrationEventHandlerTest>());
         }
 
-        // TODO: Move to another microservice
+        // TODO: Move to another microservice (here for testing)
         private void RegisterIntegrationEventHandlers(IServiceCollection services)
         {
             services.AddTransient<OrderStartedIntegrationEventHandlerTest>();
