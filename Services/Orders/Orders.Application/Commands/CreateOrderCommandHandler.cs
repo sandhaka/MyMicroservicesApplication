@@ -44,13 +44,11 @@ namespace Orders.Application.Commands
             var result = await _orderRepository.UnitOfWork.SaveEntitiesAsync();
 
             // Publish new order as integration event
+            var integrationEvent = new OrderStartedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, order.Id);
+            
             await _eventBus.PublishAsync<OrderStartedIntegrationEvent>(
-                JsonConvert.SerializeObject(
-                    new OrderStartedIntegrationEvent(
-                        Guid.NewGuid(),   
-                        DateTime.UtcNow, 
-                        order.Id)             
-                ), CancellationToken.None
+                JsonConvert.SerializeObject(integrationEvent), 
+                CancellationToken.None
             );
 
             return result;
