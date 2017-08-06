@@ -48,6 +48,11 @@ Install this certificate in your dev computer.
 
 Setup AWS credentials into a file (MyMicroservicesApplication\Services\Orders\Orders.Application\aws.dev\credentials): [Guide](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html)
 
+For Authorization, Orders and Catalog services you need to initialize the mySQL schema. Use the dotnet utility for each service, type the following commands from the project folders:
+```sh
+dotnet ef database -v update
+```
+
 ### How to run the solution:
 ```sh
 $ docker-compose -c docker-compose.dev.yml build

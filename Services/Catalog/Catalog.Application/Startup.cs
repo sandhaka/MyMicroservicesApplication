@@ -1,7 +1,7 @@
-﻿using AuthService.Repository.Users;
-using AuthService.DbModels;
-using System;
+﻿using System;
 using System.Reflection;
+using Catalog.Application.Infrastructure;
+using Catalog.Application.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace AuthService
+namespace Catalog.Application
 {
     public partial class Startup
     {
@@ -36,8 +36,8 @@ namespace AuthService
             // Otherwise take from the local configuration (service testing)
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Configuration.GetConnectionString("DefaultConnection");
-            
-            services.AddDbContext<IdentityContext>(options =>
+
+            services.AddDbContext<CatalogContext>(options =>
             {
                 options.UseMySql(
                     connectionString,
@@ -47,10 +47,13 @@ namespace AuthService
                     });
             });
             
-            services.AddTransient<IUserRepository, UserRepository>();
-            
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                // TODO: add global exception handling
+            });
+
+            services.AddTransient<ICatalogRepository, CatalogRepository>();
             
             // Add https features
             services.Configure<MvcOptions>(options =>
@@ -62,16 +65,16 @@ namespace AuthService
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            
+                        
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
             
             ConfigureAuth(app);
-
+            
             app.UseMvc();
 
-            new UserDbContextSeed().SeedAsync(app, loggerFactory).Wait();
+            new CatalogContextSeed().SeedAsync(app, loggerFactory).Wait();
         }
     }
 }
