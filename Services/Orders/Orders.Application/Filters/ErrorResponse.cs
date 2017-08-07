@@ -1,4 +1,4 @@
-﻿namespace Orders.Application.ExceptionHandling
+﻿namespace Orders.Application.Filters
 {
     public class ErrorResponse
     {

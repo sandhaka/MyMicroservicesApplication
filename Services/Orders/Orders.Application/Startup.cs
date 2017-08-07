@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orders.Application.Commands;
-using Orders.Application.ExceptionHandling;
+using Orders.Application.Filters;
 using Orders.Application.Validation;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;

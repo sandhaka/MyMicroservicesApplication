@@ -12,13 +12,19 @@ namespace Orders.Application.IntegrationEvents.Events
         public int OrderId { get; set; }
 
         [DataMember]
-        public Dictionary<int, int> OrderItems { get; set; }
+        public List<OrderItemInfo> OrderItems { get; set; }
 
-        public OrderStartedIntegrationEvent(Guid guid, DateTime creation, int orderId, Dictionary<int,int> orderItems) 
+        public OrderStartedIntegrationEvent(Guid guid, DateTime creation, int orderId, List<OrderItemInfo> orderItems) 
             : base(guid, creation)
         {
             OrderId = orderId;
             OrderItems = orderItems;
         }
+    }
+    
+    public class OrderItemInfo
+    {
+        public int ProductId { get; set; }
+        public int Assets { get; set; }
     }
 }

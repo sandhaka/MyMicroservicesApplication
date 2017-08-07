@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace Orders.Application.ExceptionHandling
+namespace Orders.Application.Filters
 {
     public class HttpGlobalExceptionHandlingFilter : IExceptionFilter
     {
