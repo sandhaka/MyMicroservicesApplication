@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using EventBus.Events;
 
@@ -10,9 +11,14 @@ namespace Orders.Application.IntegrationEvents.Events
         [DataMember]
         public int OrderId { get; set; }
 
-        public OrderStartedIntegrationEvent(Guid guid, DateTime creation, int orderId) : base(guid, creation)
+        [DataMember]
+        public Dictionary<int, int> OrderItems { get; set; }
+
+        public OrderStartedIntegrationEvent(Guid guid, DateTime creation, int orderId, Dictionary<int,int> orderItems) 
+            : base(guid, creation)
         {
             OrderId = orderId;
+            OrderItems = orderItems;
         }
     }
 }

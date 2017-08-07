@@ -6,8 +6,8 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
     {
         private string _productName;
         private decimal _unitPrice;
-        private int _units;
         
+        public int Units { get; private set; }
         public int ProductId { get; private set; }
         
         protected OrderItem() {}
@@ -20,10 +20,10 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
             }
 
             ProductId = productId;
+            Units = units;
 
             _productName = productName;
             _unitPrice = unitPrize;
-            _units = units;
         }
 
         public void AddUnits(int units)
@@ -33,7 +33,7 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
                 // TODO the same
             }
 
-            _units += units;
+            Units += units;
         }
 
         public decimal GetUnitPrice()

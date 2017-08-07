@@ -8,6 +8,7 @@ services:
             - "5000:443"
         environment:
             CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.identityDb; Uid=sandhaka; Password=pwd"
+            ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
             - mysql.data
     orders:
@@ -18,6 +19,18 @@ services:
             - "9000:443"
         environment:
             CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.ordersDb; Uid=sandhaka; Password=pwd"
+            ASPNETCORE_ENVIRONMENT: "Development"
+        depends_on:
+            - mysql.data
+    catalog:
+        build: ./Services/Catalog/Catalog.Application
+        image: "sandhaka/mymicsapp_catalog"
+        command: dotnet run --rm
+        ports:
+            - "9001:443"
+        environment:
+            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.catalogDb; Uid=sandhaka; Password=pwd"
+            ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
             - mysql.data
     # I'm goind to use the same database for all the services but keep the aggregates separate. 

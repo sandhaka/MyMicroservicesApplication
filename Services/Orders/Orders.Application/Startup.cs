@@ -16,8 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orders.Application.Commands;
 using Orders.Application.ExceptionHandling;
-using Orders.Application.IntegrationEvents;
-using Orders.Application.IntegrationEvents.Events;
 using Orders.Application.Validation;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;
@@ -109,17 +107,12 @@ namespace Orders.Application
 
         private void ConfigureEventBus(IApplicationBuilder app)
         {
-            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-
-            // TODO: Move to another microservice (here for testing)
-            eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandlerTest>(() =>
-                app.ApplicationServices.GetRequiredService<OrderStartedIntegrationEventHandlerTest>());
+            
         }
 
-        // TODO: Move to another microservice (here for testing)
         private void RegisterIntegrationEventHandlers(IServiceCollection services)
         {
-            services.AddTransient<OrderStartedIntegrationEventHandlerTest>();
+            
         }
     }
 }

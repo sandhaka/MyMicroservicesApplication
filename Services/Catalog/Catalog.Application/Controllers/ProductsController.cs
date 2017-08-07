@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.Application.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class ProductsController : Controller
     {
         private readonly ICatalogRepository _catalogRepository;

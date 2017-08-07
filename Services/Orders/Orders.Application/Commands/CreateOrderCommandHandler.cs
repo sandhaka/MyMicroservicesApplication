@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
@@ -44,7 +46,9 @@ namespace Orders.Application.Commands
             var result = await _orderRepository.UnitOfWork.SaveEntitiesAsync();
 
             // Publish new order as integration event
-            var integrationEvent = new OrderStartedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, order.Id);
+            var items = new Dictionary<int, int>();
+            order.OrderItems.ToList().ForEach((item) => { items.Add(item.ProductId, item.Units); });
+            var integrationEvent = new OrderStartedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, order.Id, items);
             
             await _eventBus.PublishAsync<OrderStartedIntegrationEvent>(
                 JsonConvert.SerializeObject(integrationEvent), 

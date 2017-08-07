@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Reflection;
+using Amazon.SimpleNotificationService;
+using Amazon.SQS;
 using Catalog.Application.Infrastructure;
 using Catalog.Application.Infrastructure.Repositories;
+using Catalog.Application.IntegrationEvents;
+using Catalog.Application.IntegrationEvents.Events;
+using EventBus;
+using EventBus.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -47,13 +53,22 @@ namespace Catalog.Application
                     });
             });
             
-            // Add framework services.
+            // Add services
             services.AddMvc(options =>
             {
                 // TODO: add global exception handling
             });
-
-            services.AddTransient<ICatalogRepository, CatalogRepository>();
+            
+            services.AddTransient<ICatalogRepository, CatalogRepository>(); /* Catalog repository */
+            services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
+            services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
+           
+            // Amazon services setup
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions()); /* Setup credentails and others options */
+            services.AddAWSService<IAmazonSimpleNotificationService>(); /* Amazon SNS */
+            services.AddAWSService<IAmazonSQS>(); /* Amazon SQS */
+            services.AddTransient<OrderStartedIntegrationEventHandler>();
+            services.AddSingleton<IConfiguration>(Configuration); /* Make project configuration available */
             
             // Add https features
             services.Configure<MvcOptions>(options =>
@@ -64,17 +79,26 @@ namespace Catalog.Application
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Debug);
                         
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
             
             ConfigureAuth(app);
+            ConfigureEventBus(app);
             
             app.UseMvc();
 
             new CatalogContextSeed().SeedAsync(app, loggerFactory).Wait();
+        }
+
+        private void ConfigureEventBus(IApplicationBuilder app)
+        {
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
+            eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>(() =>
+                app.ApplicationServices.GetRequiredService<OrderStartedIntegrationEventHandler>());
         }
     }
 }
