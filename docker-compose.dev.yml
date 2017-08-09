@@ -1,5 +1,6 @@
 version: '3.2'
 services:
+    # Json Web Tokens authorization server
     auth:
         build: ./Services/AuthService
         image: sandhaka/mymicsapp_auth
@@ -45,3 +46,13 @@ services:
             - $HOME/data/mymicsapp_db:/var/lib/mysql
         ports:
             - "3306:3306"
+    # Angular 2 client running on ngix web server
+    web.spa:
+        build: ./Clients/Web/spa
+        image: sandhaka/mymicsapp_webspa
+        ports:
+            - "80:80"
+        environment:
+            API_URL: ""
+        volumes:
+            - $HOME/mymicsapp/nginx-logs:/var/log/nginx
