@@ -1,0 +1,8 @@
+{
+  "/api/token": {
+    "target": "https://192.168.104.100:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

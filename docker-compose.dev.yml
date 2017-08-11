@@ -53,8 +53,8 @@ services:
         ports:
             - "80:80"
         environment:
-            CatalogUrl: "https://${DEV_WEB_API_DNS_OR_IP}:9001"
-            OrdersUrl: "https://${DEV_WEB_API_DNS_OR_IP}:9000"
-            AuthUrl: "https://${DEV_WEB_API_DNS_OR_IP}:5000"
+            CATALOG_URL: "https://${DEV_WEB_API_DNS_OR_IP}:9001"
+            ORDERS_URL: "https://${DEV_WEB_API_DNS_OR_IP}:9000"
+            AUTH_URL: "https://${DEV_WEB_API_DNS_OR_IP}:5000"
         volumes:
             - $HOME/mymicsapp/nginx-logs:/var/log/nginx
