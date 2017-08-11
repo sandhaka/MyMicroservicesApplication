@@ -44,11 +44,14 @@ export class LoginComponent implements OnInit {
     this.buildForm();
   }
 
+  /**
+   * Login action
+   */
   onNgSubmit() {
     this.userDto = this.form.value;
     this.authService.login(this.userDto.username, this.userDto.password).subscribe(
       (result: any) => {
-        if(result.data == true) {
+        if(result == true) {
           this.router.navigate(['/shop']);
         }
         else {
@@ -58,6 +61,9 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  /**
+   * Setup the login form
+   */
   private buildForm() {
     this.form = this.formBuilder.group({
       'username': [
@@ -76,6 +82,10 @@ export class LoginComponent implements OnInit {
     this.onDataChanged();
   }
 
+  /**
+   * Setup the error messages
+   * @param data
+   */
   private onDataChanged(data?: any) {
     if (!this.form)
       return;

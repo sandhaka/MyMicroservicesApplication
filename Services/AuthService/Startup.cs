@@ -49,6 +49,10 @@ namespace AuthService
             
             services.AddTransient<IUserRepository, UserRepository>();
             
+            var loggerFactory = new LoggerFactory();
+            loggerFactory.AddConsole(Configuration.GetSection("Logger"));
+            loggerFactory.AddDebug();
+            
             // Add framework services.
             services.AddMvc();
             
@@ -70,7 +74,7 @@ namespace AuthService
             ConfigureAuth(app);
 
             app.UseMvc();
-
+            
             new UserDbContextSeed().SeedAsync(app, loggerFactory).Wait();
         }
     }

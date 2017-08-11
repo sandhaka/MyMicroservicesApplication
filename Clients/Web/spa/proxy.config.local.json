@@ -1,0 +1,8 @@
+{
+  "/api/token": {
+    "target": "https://localhost:443",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

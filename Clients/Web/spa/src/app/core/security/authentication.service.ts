@@ -19,11 +19,12 @@ export class AuthenticationService {
     let headers: Headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
-    return this.http.post(this.serverConfig.authServer + '/api/token',
-      JSON.stringify({ username: username, password: password }),{headers:headers})
+    let body = `username=${username}&password=${password}`;
+
+    return this.http.post(this.serverConfig.authServer + '/api/token', body,{headers:headers})
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
-        let token = response.json() && response.json().token;
+        let token = response.json() && response.json().access_token;
         if (token) {
           // set token property
           this.token = token;
