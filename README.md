@@ -53,6 +53,19 @@ For Authorization, Orders and Catalog services you need to initialize the mySQL 
 dotnet ef database -v update
 ```
 
+### How to run the solution:
+```sh
+$ docker-compose -c docker-compose.dev.yml build
+```
+```sh
+$ docker-compose -c docker-compose.dev.yml up
+```
+or build run and detach
+```sh
+$ docker-compose -c docker-compose.dev.yml up --build -d
+```
+navigate to http://<your-docker-host-name-or-ip>/
+
 ### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
 
@@ -78,19 +91,6 @@ $ npm run start-docker
 (see proxy.config.docker.json)
 
 Others options are the same from angular-cli [docs](https://github.com/angular/angular-cli)
-
-### How to run the solution:
-```sh
-$ docker-compose -c docker-compose.dev.yml build
-```
-```sh
-$ docker-compose -c docker-compose.dev.yml up
-```
-or build run and detach
-```sh
-$ docker-compose -c docker-compose.dev.yml up --build -d
-```
-navigate to http://<your-docker-host-name-or-ip>/
 
 ### How to debug a remote container:
 For example, to debug the auth_service: look at the Dockerfile.debug version. I added the sshd support. Then you can attach remotely over a ssh tunnel with your ide. Notes the port mapping '2222:22' to avoid conflicts with the host's ssh server.
