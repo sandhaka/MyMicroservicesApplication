@@ -17,7 +17,7 @@ I use MySQL to keep users informations running on the 'db' container with a mapp
 
 dotnet-ef migrations to database versioning.
 
-### Requirements
+### Requirements:
 For each aspnet core service you may need to restore packages:
 ```sh
 $ dotnet restore
@@ -53,6 +53,32 @@ For Authorization, Orders and Catalog services you need to initialize the mySQL 
 dotnet ef database -v update
 ```
 
+### Notes about the frontend:
+The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
+
+.1 Run the webpack-dev-server with a local backend services (ex. if you want to debug a service locally with the frontend as client). Configure the proxy with the desired redirects for the routes, for example I want to debug the login page using the authorization service run locally:
+```json
+  {
+    "/api/token": {
+        "target": "https://localhost:443",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+  }
+```
+(proxy.config.local.json)
+```sh
+$ npm run start
+```
+.2 Or run the webpack-dev-server with the backend run on the docker host
+```sh
+$ npm run start-docker
+```
+(see proxy.config.docker.json)
+
+Others options are the same from angular-cli [docs](https://github.com/angular/angular-cli)
+
 ### How to run the solution:
 ```sh
 $ docker-compose -c docker-compose.dev.yml build
@@ -64,6 +90,8 @@ or build run and detach
 ```sh
 $ docker-compose -c docker-compose.dev.yml up --build -d
 ```
+navigate to http://<your-docker-host-name-or-ip>/
+
 ### How to debug a remote container:
 For example, to debug the auth_service: look at the Dockerfile.debug version. I added the sshd support. Then you can attach remotely over a ssh tunnel with your ide. Notes the port mapping '2222:22' to avoid conflicts with the host's ssh server.
 
@@ -73,12 +101,12 @@ $ docker-compose -c docker-compose.dev.yml -c docker-compose.debug.yml up --buil
 ```
 Execute, on the docker host the ssh server of the container
 ```sh
-root@docker-host$ docker exec -it <container-id> "/usr/sbin/sshd"  
+$ docker exec -it <container-id> "/usr/sbin/sshd"  
 ```
 Copy the ssh key to the docker container, look into the 'scripts' folder. Remember that you can reach the ssh server of the container through the docker-host port mapped (2222 in this case).
 ```sh
- $ ssh-copy-id -p 2222 -i your_public_key.pub -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" root@<docker-host-ip>
- ```
+$ ssh-copy-id -p 2222 -i your_public_key.pub -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" root@<docker-host-ip>
+```
 If you are using vs code, you can now use the launch.json settings to attach to the remote container and select the correct process (example configuration).
 ```json
 {
