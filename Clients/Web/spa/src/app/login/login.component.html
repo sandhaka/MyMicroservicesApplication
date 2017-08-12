@@ -5,12 +5,12 @@
       <legend>Sign In</legend>
       <div class="form-group">
         <label>User name / Email</label>
-        <input type="text" formControlName="username" class="form-control">
+        <input type="text" formControlName="username" class="form-control" placeholder="username">
         <span style="color: red" *ngIf="formErrors.username">{{formErrors.username}}</span>
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" formControlName="password" class="form-control">
+        <input type="password" formControlName="password" class="form-control" placeholder="password">
         <span style="color: red" *ngIf="formErrors.password">{{formErrors.password}}</span>
       </div>
       <div class="form-group">

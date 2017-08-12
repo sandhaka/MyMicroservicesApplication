@@ -7,7 +7,6 @@ RUN apk add --update --no-cache nodejs && mkdir $APP_PATH && rm -rf /etc/nginx/c
 WORKDIR $APP_PATH
 
 COPY . .
-COPY scripts /scripts/**/*.sh
 
 COPY nginx/default.conf /etc/nginx/conf.d/
 
@@ -19,4 +18,8 @@ RUN npm install \
   && apk del nodejs libstdc++ libgcc libuv http-parser ca-certificates \
   && rm -rf ./*
 
-CMD ["bash", "/scripts/docker-startup.sh"]
+RUN /bin/sed -i "s|CATALOG_URL|https://192.168.104.100:9001|" /usr/share/nginx/html/main* \
+  && /bin/sed -i "s|AUTH_URL|https://192.168.104.100:5000|" /usr/share/nginx/html/main* \
+  && /bin/sed -i "s|ORDERS_URL|https://192.168.104.100:9000|" /usr/share/nginx/html/main*
+
+CMD ["nginx", "-g", "daemon off;"]

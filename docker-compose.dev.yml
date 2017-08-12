@@ -52,9 +52,5 @@ services:
         image: sandhaka/mymicsapp_webspa
         ports:
             - "80:80"
-        environment:
-            CATALOG_URL: "https://${DEV_WEB_API_DNS_OR_IP}:9001"
-            ORDERS_URL: "https://${DEV_WEB_API_DNS_OR_IP}:9000"
-            AUTH_URL: "https://${DEV_WEB_API_DNS_OR_IP}:5000"
         volumes:
             - $HOME/mymicsapp/nginx-logs:/var/log/nginx

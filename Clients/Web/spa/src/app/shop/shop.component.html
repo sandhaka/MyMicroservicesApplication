@@ -1,3 +1,38 @@
-<div>
-  TODO: Shop Component
+<div class="container">
+  <div class="well well-sm">
+    <strong>Display</strong>
+    <div class="btn-group">
+      <a href="#" (click)="viewByList($event)" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-th-list"></span>List
+      </a>
+      <a href="#" (click)="viewByGrid($event)" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-th"></span>Grid
+      </a>
+    </div>
+  </div>
+  <div id="products" class="row list-group">
+    <div *ngFor="let product of products"
+         [ngClass]="{'list-group-item' : viewType === 'list', 'grid-group-item' : viewType === 'grid'}"
+         class="item col-xs-4 col-lg-4">
+      <div class="thumbnail">
+        <img class="group list-group-image" src="../../assets/images/shopping.png" alt="demo-product-image" />
+        <div class="caption">
+          <h4 class="group inner list-group-item-heading">
+            {{product.productName}}</h4>
+          <span>Available quantity: {{product.assets}}</span>
+          <p class="group inner list-group-item-text">
+            {{product.package}}</p>
+          <div class="row">
+            <div class="col-xs-12 col-md-6">
+              <p class="lead">
+                ${{product.unitPrice}}</p>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <a class="btn btn-success" href="" (click)="addToChart()">Add to cart</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

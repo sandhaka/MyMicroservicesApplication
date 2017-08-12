@@ -48,6 +48,16 @@ namespace AuthService
             });
             
             services.AddTransient<IUserRepository, UserRepository>();
+
+            // Add cors and create Policy with options
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials() );
+            });
             
             // Add framework services.
             services.AddMvc();
@@ -67,8 +77,10 @@ namespace AuthService
                 .AddRedirectToHttps();
             app.UseRewriter(options);
             
+            app.UseCors("CorsPolicy");
+            
             ConfigureAuth(app);
-
+            
             app.UseMvc();
             
             new UserDbContextSeed().SeedAsync(app, loggerFactory).Wait();

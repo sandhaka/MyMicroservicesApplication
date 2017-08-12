@@ -53,6 +53,16 @@ namespace Catalog.Application
                     });
             });
             
+            // Add cors and create Policy with options
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials() );
+            });
+            
             // Add services
             services.AddMvc(options =>
             {
@@ -84,6 +94,8 @@ namespace Catalog.Application
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
+            
+            app.UseCors("CorsPolicy");
             
             ConfigureAuth(app);
             ConfigureEventBus(app);
