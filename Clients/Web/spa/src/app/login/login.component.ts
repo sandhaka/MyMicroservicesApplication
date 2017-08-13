@@ -40,7 +40,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.logout();
+
+    if(this.authService.tokenCheck()) {
+      this.router.navigate(['/shop']);
+      return;
+    }
+
     this.buildForm();
   }
 

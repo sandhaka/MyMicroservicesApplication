@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {Observable} from "rxjs/Observable";
+import {AuthenticationService} from "./authentication.service";
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
@@ -8,7 +9,7 @@ export class AuthGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot)
     : boolean | Observable<boolean> | Promise<boolean> {
 
-    if(localStorage.getItem('currentUser')) {
+    if(this.authService.tokenCheck()) {
       return true;
     }
 
@@ -17,8 +18,10 @@ export class AuthGuardService implements CanActivate {
   }
 
   private router: Router;
+  private authService;
 
-  constructor(router: Router) {
+  constructor(router: Router, authService: AuthenticationService) {
     this.router = router;
+    this.authService = authService;
   }
 }

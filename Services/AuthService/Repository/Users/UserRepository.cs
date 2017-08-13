@@ -47,7 +47,9 @@ namespace AuthService.Repository.Users
                                 new GenericIdentity(username, "Token"),
                                 new Claim[]
                                 {
-                                    new Claim("Admin", user.level == 0 ? "true" : "false")
+                                    new Claim("isAdmin", user.level == 0 ? "true" : "false"),
+                                    new Claim("userId", user.id),
+                                    new Claim("username", user.username) 
                                 });
                         }
                     }
