@@ -1,6 +1,5 @@
 version: '3.2'
 services:
-    # Json Web Tokens authorization server
     auth:
         build: ./Services/AuthService
         image: sandhaka/mymicsapp_auth
@@ -34,6 +33,14 @@ services:
             ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
             - mysql.data
+    basket:
+        build: ./Services/Basket/Basket.Application
+        image: "sandhaka/mymicsapp_basket"
+        command: dotnet run --rm
+        ports:
+          - "9002:443"
+        environment:
+            ASPNETCORE_ENVIRONMENT: "Development"
     # I'm goind to use the same database for all the services but keep the aggregates separate. 
     # In a production environment I'll plan to use a dedicated one for each microservice
     mysql.data:
@@ -46,7 +53,6 @@ services:
             - $HOME/data/mymicsapp_db:/var/lib/mysql
         ports:
             - "3306:3306"
-    # Angular 2 client running on ngix web server
     web.spa:
         build: ./Clients/Web/spa
         image: sandhaka/mymicsapp_webspa

@@ -64,7 +64,7 @@ or build run and detach
 ```sh
 $ docker-compose -c docker-compose.dev.yml up --build -d
 ```
-navigate to http://<your-docker-host-name-or-ip>/
+Navigate to http://your-docker-host-name-or-ip/
 
 ### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
