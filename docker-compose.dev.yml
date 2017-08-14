@@ -40,7 +40,10 @@ services:
         ports:
           - "9002:443"
         environment:
+            REDIS_CONNECTION: "redis.data"
             ASPNETCORE_ENVIRONMENT: "Development"
+        depends_on:
+          - redis.data
     # I'm goind to use the same database for all the services but keep the aggregates separate. 
     # In a production environment I'll plan to use a dedicated one for each microservice
     mysql.data:
@@ -53,10 +56,14 @@ services:
             - $HOME/data/mymicsapp_db:/var/lib/mysql
         ports:
             - "3306:3306"
+    redis.data:
+        image: "redis"
+        ports:
+          - "6379:6379"
     web.spa:
         build: ./Clients/Web/spa
         image: sandhaka/mymicsapp_webspa
         ports:
-            - "80:80"
+            - "443:443"
         volumes:
             - $HOME/mymicsapp/nginx-logs:/var/log/nginx

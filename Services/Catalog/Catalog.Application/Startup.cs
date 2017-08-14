@@ -2,6 +2,7 @@
 using System.Reflection;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
+using Catalog.Application.Filters;
 using Catalog.Application.Infrastructure;
 using Catalog.Application.Infrastructure.Repositories;
 using Catalog.Application.IntegrationEvents;
@@ -38,8 +39,7 @@ namespace Catalog.Application
         {
             // Take connection string from environment varible by default
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
-            // Otherwise take from the local configuration (service testing)
+            // Otherwise take from the local configuration
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Configuration.GetConnectionString("DefaultConnection");
 
@@ -66,7 +66,7 @@ namespace Catalog.Application
             // Add services
             services.AddMvc(options =>
             {
-                // TODO: add global exception handling
+                options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
             });
             
             services.AddTransient<ICatalogRepository, CatalogRepository>(); /* Catalog repository */
@@ -91,7 +91,7 @@ namespace Catalog.Application
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug(LogLevel.Debug);
+            loggerFactory.AddDebug(LogLevel.Trace);
                         
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
@@ -99,9 +99,14 @@ namespace Catalog.Application
             
             app.UseCors("CorsPolicy");
             
-            ConfigureAuth(app);
             ConfigureEventBus(app);
-            
+
+            // Log actions
+            app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<ResponseLoggingMiddleware>();
+
+            ConfigureAuth(app);
+
             app.UseMvc();
 
             new CatalogContextSeed().SeedAsync(app, loggerFactory).Wait();

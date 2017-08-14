@@ -9,6 +9,7 @@ WORKDIR $APP_PATH
 COPY . .
 
 COPY nginx/default.conf /etc/nginx/conf.d/
+COPY certificate/* /etc/nginx/conf.d/certificate/
 
 RUN npm install \
   && ng build --aot --prod \

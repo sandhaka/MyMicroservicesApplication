@@ -111,8 +111,13 @@ namespace Orders.Application
 
             app.UseCors("CorsPolicy");
             
-            ConfigureAuth(app);
             ConfigureEventBus(app);
+
+            // Log actions
+            app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<ResponseLoggingMiddleware>();
+            
+            ConfigureAuth(app);
 
             app.UseMvc();
         }

@@ -34,7 +34,7 @@ export class ShopComponent implements OnInit {
     this.viewType = 'grid';
   }
 
-  addToChart() {
+  AddToBasket() {
     // TODO
   }
 }

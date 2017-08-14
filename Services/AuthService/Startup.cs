@@ -2,6 +2,7 @@
 using AuthService.DbModels;
 using System;
 using System.Reflection;
+using AuthService.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +61,10 @@ namespace AuthService
             });
             
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(opts =>
+            {
+                // TODO
+            });
             
             // Add https features
             services.Configure<MvcOptions>(options =>
@@ -71,13 +75,17 @@ namespace AuthService
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Trace);
             
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
             
             app.UseCors("CorsPolicy");
+            
+            // Log actions
+            app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<ResponseLoggingMiddleware>();
             
             ConfigureAuth(app);
             

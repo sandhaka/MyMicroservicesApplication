@@ -2,7 +2,7 @@
 import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {UserData} from "../shared/user-data";
+import {UserData} from "./user-data";
 import {AuthenticationService} from "../core/security/authentication.service";
 
 @Component({
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
     this.userDto = this.form.value;
     this.authService.login(this.userDto.username, this.userDto.password).subscribe(
       (result: any) => {
-        if(result == true) {
+        if(result) {
           this.router.navigate(['/shop']);
         }
         else {

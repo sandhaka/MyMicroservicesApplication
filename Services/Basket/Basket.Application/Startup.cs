@@ -1,5 +1,9 @@
-﻿using Amazon.SimpleNotificationService;
+﻿using System;
+using System.Linq;
+using System.Net;
+using Amazon.SimpleNotificationService;
 using Amazon.SQS;
+using Basket.Application.Filters;
 using EventBus;
 using EventBus.Abstractions;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +12,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Basket.Application
 {
@@ -43,6 +48,18 @@ namespace Basket.Application
             {
                 // TODO: add global exception handling
             });
+
+            // Take Redis connection string from environment varible by default
+            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
+            // Otherwise take from the local configuration
+            if (string.IsNullOrEmpty(redisConnectionString))
+                redisConnectionString = Configuration.GetConnectionString("Redis");
+            
+            services.AddSingleton<ConnectionMultiplexer>(sp =>
+            {
+                var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
+                return ConnectionMultiplexer.Connect(ips.First().ToString());
+            });
             
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
             services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
@@ -66,8 +83,13 @@ namespace Basket.Application
             
             app.UseCors("CorsPolicy");
             
-            ConfigureAuth(app);
             ConfigureEventBus(app);
+            
+            // Log actions
+            app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<ResponseLoggingMiddleware>();
+            
+            ConfigureAuth(app);
             
             app.UseMvc();
         }
@@ -75,7 +97,7 @@ namespace Basket.Application
         private void ConfigureEventBus(IApplicationBuilder app)
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-
+            // TODO
         }
     }
 }

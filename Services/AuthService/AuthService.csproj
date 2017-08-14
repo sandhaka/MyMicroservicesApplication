@@ -41,6 +41,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers" />
-    <Folder Include="Filters" />
   </ItemGroup>
 </Project>
