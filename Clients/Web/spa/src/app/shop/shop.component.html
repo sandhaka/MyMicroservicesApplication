@@ -2,12 +2,23 @@
   <div class="well well-sm">
     <strong>Display</strong>
     <div class="btn-group">
-      <a href="#" (click)="viewByList($event)" class="btn btn-default btn-sm">
+      <button (click)="viewByList($event)" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-th-list"></span>List
-      </a>
-      <a href="#" (click)="viewByGrid($event)" class="btn btn-default btn-sm">
+      </button>
+      <button (click)="viewByGrid($event)" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-th"></span>Grid
-      </a>
+      </button>
+    </div>
+    <div class="btn-group pull-right">
+      <button (click)="goToBasket()" class="btn btn-default btn-sm">
+        <i class="fa fa-shopping-cart" style="font-size: 130%"></i>
+        <a *ngIf="" class="icon-shopping-cart">
+          <label class="badge" style="background-color: orange">3</label>
+        </a>
+      </button>
+      <button (click)="logout()" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-log-in"></span>
+      </button>
     </div>
   </div>
   <div id="products" class="row list-group">
@@ -28,7 +39,7 @@
                 ${{product.unitPrice}}</p>
             </div>
             <div class="col-xs-12 col-md-6">
-              <a class="btn btn-success" href="" (click)="AddToBasket()">Add to cart</a>
+              <button class="btn btn-success" (click)="AddToBasket()">Add to cart</button>
             </div>
           </div>
         </div>

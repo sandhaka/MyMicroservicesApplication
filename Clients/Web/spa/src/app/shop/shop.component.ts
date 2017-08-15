@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ShopService} from "./shop.service";
+import {AuthenticationService} from "../core/security/authentication.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'shop-component',
@@ -13,9 +15,13 @@ export class ShopComponent implements OnInit {
 
   private shopService: ShopService;
   private viewType: string = "grid";
+  private authService: AuthenticationService;
+  private router: Router;
 
-  constructor(shopService: ShopService) {
+  constructor(shopService: ShopService, authService: AuthenticationService, router: Router) {
     this.shopService = shopService;
+    this.authService = authService;
+    this.router = router;
   }
 
   ngOnInit() {
@@ -36,5 +42,14 @@ export class ShopComponent implements OnInit {
 
   AddToBasket() {
     // TODO
+  }
+
+  goToBasket() {
+    // TODO
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

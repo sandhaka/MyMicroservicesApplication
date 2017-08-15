@@ -3,6 +3,20 @@
 *Work in progress*
 --
 ![alt text](http://turnoff.us/image/en/monolith-retirement.png)
+
+### How to run the solution:
+```sh
+$ docker-compose -c docker-compose.dev.yml build
+```
+```sh
+$ docker-compose -c docker-compose.dev.yml up
+```
+or build run and detach
+```sh
+$ docker-compose -c docker-compose.dev.yml up --build -d
+```
+Navigate to http://your-docker-host-name-or-ip/
+
 ### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).
 
@@ -52,19 +66,6 @@ For Authorization, Orders and Catalog services you need to initialize the mySQL 
 ```sh
 dotnet ef database -v update
 ```
-
-### How to run the solution:
-```sh
-$ docker-compose -c docker-compose.dev.yml build
-```
-```sh
-$ docker-compose -c docker-compose.dev.yml up
-```
-or build run and detach
-```sh
-$ docker-compose -c docker-compose.dev.yml up --build -d
-```
-Navigate to http://your-docker-host-name-or-ip/
 
 ### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
