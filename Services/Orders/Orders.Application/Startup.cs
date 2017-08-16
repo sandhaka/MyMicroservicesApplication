@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orders.Application.Commands;
 using Orders.Application.Filters;
+using Orders.Application.Services;
 using Orders.Application.Validation;
+using Orders.Domain.AggregatesModel.BuyerAggregate;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;
 using Orders.Infrastructure.Repositories;
@@ -75,6 +78,9 @@ namespace Orders.Application
                 .AddFluentValidation(); /* Using Fluent validation */
 
             // Adding services to DI container
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IBuyerRepository, BuyerRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
             services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
@@ -103,7 +109,7 @@ namespace Orders.Application
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Trace);
             
             var options = new RewriteOptions()
                 .AddRedirectToHttps();

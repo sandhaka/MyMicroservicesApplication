@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MediatR;
 using Orders.Application.Controllers;
@@ -16,6 +17,24 @@ namespace Orders.Application.Commands
         
         [DataMember]
         public List<OrderItemDto> OrderItems => _orderItems;
+        
+        [DataMember]
+        public int PaymentId { get; private set; }
+
+        [DataMember]
+        public int BuyerId { get; private set; }
+        
+        [DataMember]
+        public string CardNumber { get; private set; }
+
+        [DataMember]
+        public string CardHolderName { get; private set; }
+
+        [DataMember]
+        public DateTime CardExpiration { get; private set; }
+
+        [DataMember]
+        public string CardSecurityNumber { get; private set; }
 
         public CreateOrderCommand()
         {

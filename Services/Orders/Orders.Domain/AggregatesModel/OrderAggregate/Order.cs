@@ -13,6 +13,8 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
         Entity, IAggregateRoot
     {
         private DateTime _orderDate;
+        private int? _buyerId;
+        private int? _paymentMethodId;
 
         public decimal TotalAmount()
         {
@@ -23,13 +25,22 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
 
         public IEnumerable<OrderItem> OrderItems => _orderItems.AsReadOnly();
         
-        public Order()
+        public Order( 
+            string cardNumber, 
+            string cardSecurityNumber,
+            string cardHolderName, 
+            DateTime cardExpiration, 
+            int? buyerId = null, 
+            int? paymentMethodId = null)
         {
             _orderItems = new List<OrderItem>();
             _orderDate = DateTime.UtcNow;
+
+            _buyerId = buyerId;
+            _paymentMethodId = paymentMethodId;
             
             // Emit a order started domain event
-            AddOrderStartedDomainEvent();
+            AddOrderStartedDomainEvent(cardNumber, cardHolderName, cardSecurityNumber, cardExpiration);
         }
 
         public void AddOrderItem(int productId, string productName, decimal unitPrize, int units)
@@ -46,11 +57,13 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
             }
         }
 
-        private void AddOrderStartedDomainEvent()
+        private void AddOrderStartedDomainEvent(string cardNumber, string cardHolder, string cardSecurityNumber,
+            DateTime cardExpiration)
         {
-            var orderStartedDomainEvent = new OrderStartedDomainEvent(this);
+            var orderStartedDomainEvent = new OrderStartedDomainEvent(
+                this,cardNumber,cardHolder,cardSecurityNumber,cardExpiration);
+            
             this.AddDomainEvent(orderStartedDomainEvent);
-            // TODO handler not yet implemented
         }
     }
 }
