@@ -7,7 +7,7 @@ using Orders.Domain.SeedWork;
 namespace Orders.Domain.AggregatesModel.OrderAggregate
 {
     /// <summary>
-    /// Order domain object
+    /// Order entity
     /// </summary>
     public class Order :
         Entity, IAggregateRoot

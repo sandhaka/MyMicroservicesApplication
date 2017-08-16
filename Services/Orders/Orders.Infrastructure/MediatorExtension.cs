@@ -31,6 +31,7 @@ namespace Orders.Infrastructure
                     await mediator.Publish(domainEvent);
                 });
 
+            // Ensures the atomicity of the all db changes
             await Task.WhenAll(tasks); 
         }
     }

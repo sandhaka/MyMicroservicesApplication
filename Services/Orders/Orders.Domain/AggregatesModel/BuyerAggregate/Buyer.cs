@@ -6,6 +6,9 @@ using Orders.Domain.SeedWork;
 
 namespace Orders.Domain.AggregatesModel.BuyerAggregate
 {
+    /// <summary>
+    /// Buyer entity
+    /// </summary>
     public class Buyer :
         Entity, IAggregateRoot
     {
