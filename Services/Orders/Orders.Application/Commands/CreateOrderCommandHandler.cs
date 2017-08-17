@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using EventBus.Abstractions;
 using MediatR;
-using Newtonsoft.Json;
-using Orders.Application.IntegrationEvents.Events;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 
 namespace Orders.Application.Commands
@@ -51,20 +46,6 @@ namespace Orders.Application.Commands
             _orderRepository.Add(order);
             
             var result = await _orderRepository.UnitOfWork.SaveEntitiesAsync();
-
-            // Publish the new order as integration event
-            var items = new List<OrderItemInfo>();
-            order.OrderItems.ToList().ForEach((item) =>
-            {
-                items.Add(new OrderItemInfo() {ProductId = item.ProductId, Assets = item.Units});
-            });
-            
-            var integrationEvent = new OrderStartedIntegrationEvent(Guid.NewGuid(), DateTime.UtcNow, order.Id, items);
-            
-            await _eventBus.PublishAsync<OrderStartedIntegrationEvent>(
-                JsonConvert.SerializeObject(integrationEvent), 
-                CancellationToken.None
-            );
 
             return result;
         }

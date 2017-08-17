@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Catalog.Application.Infrastructure.Repositories;
-using Catalog.Application.IntegrationEvents.Events;
 using EventBus.Abstractions;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
+using EventBusAwsSns.Shared.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
 namespace Catalog.Application.IntegrationEvents

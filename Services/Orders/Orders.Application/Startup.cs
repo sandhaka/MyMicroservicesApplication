@@ -79,6 +79,7 @@ namespace Orders.Application
 
             // Adding services to DI container
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<IBuyerRepository, BuyerRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */

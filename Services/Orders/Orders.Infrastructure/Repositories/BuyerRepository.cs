@@ -39,9 +39,7 @@ namespace Orders.Infrastructure.Repositories
         public async Task<Buyer> FindAsync(string identity)
         {
             var buyer = await _context.Buyers
-                .Include(b => b.PaymentMethods)
-                .Where(b => b.IdentityGuid == identity)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync(b => b.IdentityGuid == identity);
 
             return buyer;
         }

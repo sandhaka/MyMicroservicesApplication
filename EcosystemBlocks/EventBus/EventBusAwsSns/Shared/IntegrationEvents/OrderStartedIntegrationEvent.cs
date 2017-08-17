@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using EventBus.Events;
 
-namespace Orders.Application.IntegrationEvents.Events
+namespace EventBusAwsSns.Shared.IntegrationEvents
 {
     [DataContract]
     public class OrderStartedIntegrationEvent : IntegrationEvent
@@ -13,12 +13,16 @@ namespace Orders.Application.IntegrationEvents.Events
 
         [DataMember]
         public List<OrderItemInfo> OrderItems { get; set; }
+        
+        [DataMember]
+        public string UserId { get; }
 
-        public OrderStartedIntegrationEvent(Guid guid, DateTime creation, int orderId, List<OrderItemInfo> orderItems) 
+        public OrderStartedIntegrationEvent(Guid guid, string userId, DateTime creation, int orderId, List<OrderItemInfo> orderItems) 
             : base(guid, creation)
         {
             OrderId = orderId;
             OrderItems = orderItems;
+            UserId = userId;
         }
     }
     

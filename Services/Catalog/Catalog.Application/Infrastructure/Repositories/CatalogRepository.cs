@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Application.DbModels;
-using Catalog.Application.IntegrationEvents.Events;
+using EventBusAwsSns.Shared.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
 namespace Catalog.Application.Infrastructure.Repositories

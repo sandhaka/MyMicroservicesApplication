@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Controllers" />
+    <Folder Include="IntegrationEvents" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

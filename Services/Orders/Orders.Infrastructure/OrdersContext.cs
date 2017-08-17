@@ -34,7 +34,7 @@ namespace Orders.Infrastructure
         {
             await _mediator.DispatchDomainEventsAsync(this);
 
-            var result = await base.SaveChangesAsync(cancellationToken);
+            await base.SaveChangesAsync(cancellationToken);
 
             return true;
         }
@@ -59,6 +59,18 @@ namespace Orders.Infrastructure
             var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
             
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            
+            orderConfiguration.HasOne<PaymentMethod>()
+                .WithMany()
+                .HasForeignKey("PaymentMethodId")
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            orderConfiguration.HasOne<Buyer>()
+                .WithMany()
+                .HasForeignKey("BuyerId")
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private void ConfigureOrderItem(EntityTypeBuilder<OrderItem> orderItemConfiguration)

@@ -24,6 +24,16 @@ namespace Orders.Domain.AggregatesModel.OrderAggregate
         private readonly List<OrderItem> _orderItems;
 
         public IEnumerable<OrderItem> OrderItems => _orderItems.AsReadOnly();
+
+        public void SetBuyerId(int buyerId)
+        {
+            _buyerId = buyerId;
+        }
+
+        public void SetPaymentMethodId(int paymentMethodId)
+        {
+            _paymentMethodId = paymentMethodId;
+        }
         
         public Order( 
             string cardNumber, 
