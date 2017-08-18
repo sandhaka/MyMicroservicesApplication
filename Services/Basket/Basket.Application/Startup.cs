@@ -4,6 +4,7 @@ using System.Net;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Basket.Application.Filters;
+using Basket.Application.Infrastructure.Repositories;
 using EventBus;
 using EventBus.Abstractions;
 using Microsoft.AspNetCore.Builder;
@@ -60,7 +61,8 @@ namespace Basket.Application
                 var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
                 return ConnectionMultiplexer.Connect(ips.First().ToString());
             });
-            
+
+            services.AddTransient<IBasketRepository, BasketRepository>();
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
             services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
            

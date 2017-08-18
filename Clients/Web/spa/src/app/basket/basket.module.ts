@@ -5,10 +5,12 @@ import {BasketService} from "./basket.service";
 import {CoreModule} from "../core/core.module";
 import {RouterModule} from "@angular/router";
 import {basketRoutes} from "./basket.routes";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   imports: [
     CoreModule,
+    CommonModule,
     RouterModule.forRoot(
       basketRoutes,
       {enableTracing: true}

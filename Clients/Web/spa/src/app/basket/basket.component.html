@@ -11,13 +11,24 @@
             <tr>
               <th class="center">Product name</th>
               <th class="center">Unit Price</th>
+              <th class="center">Quantity</th>
+              <th class="center">Total</th>
             </tr>
             </thead>
             <tbody>
-              <tr></tr>
+              <tr *ngFor="let item of basket.basketItems">
+                <td>{{item.productName}}</td>
+                <td>{{item.unitPrice | currency}}</td>
+                <td>{{item.units}}</td>
+                <td>{{item.unitPrice*item.units | currency}}</td>
+              </tr>
             </tbody>
           </table>
         </div>
+      </div>
+      <div class="row">
+        <div>Total:</div>
+        <div class="pull-right">{{basket.getTotalPrice()}}</div>
       </div>
     </div>
   </div>

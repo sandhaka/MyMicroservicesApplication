@@ -90,6 +90,14 @@ export class AuthenticationService {
     return false;
   }
 
+  getCurrentUserId() : string {
+    let data = localStorage.getItem('currentUser');
+    if(data !== null) {
+      return JSON.parse(data).userId;
+    }
+    return null;
+  }
+
   /**
    * Renew the current token
    * @returns {Observable<boolean>}

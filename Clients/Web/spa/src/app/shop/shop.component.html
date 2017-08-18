@@ -11,13 +11,17 @@
     </div>
     <div class="btn-group pull-right">
       <button (click)="goToBasket()" class="btn btn-default btn-sm">
-        <i class="fa fa-shopping-cart" style="font-size: 130%"></i>
-        <a *ngIf="" class="icon-shopping-cart">
-          <label class="badge" style="background-color: orange">3</label>
-        </a>
+        <i class="fa fa-shopping-cart" style="padding-right: 15px"></i>
+        <div *ngIf="basket !== null">
+          <a class="icon-shopping-cart">
+            <label class="badge" style="font-size: 80%; position: absolute; background-color: orange">
+              {{basket.basketItems.length}}
+            </label>
+          </a>
+        </div>
       </button>
       <button (click)="logout()" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-log-in"></span>
+        <span class="glyphicon glyphicon-log-out"></span>
       </button>
     </div>
   </div>
@@ -29,17 +33,17 @@
         <img class="group list-group-image" src="../../assets/images/shopping.png" alt="demo-product-image" />
         <div class="caption">
           <h4 class="group inner list-group-item-heading">
-            {{product.productName}}</h4>
-          <span>Available quantity: {{product.assets}}</span>
+            {{product.ProductName}}</h4>
+          <span>Available quantity: {{product.Assets}}</span>
           <p class="group inner list-group-item-text">
-            {{product.package}}</p>
+            {{product.Package}}</p>
           <div class="row">
             <div class="col-xs-12 col-md-6">
               <p class="lead">
-                ${{product.unitPrice}}</p>
+                ${{product.UnitPrice}}</p>
             </div>
             <div class="col-xs-12 col-md-6">
-              <button class="btn btn-success" (click)="AddToBasket()">Add to cart</button>
+              <button class="btn btn-success" (click)="addToBasket(product)">Add to cart</button>
             </div>
           </div>
         </div>

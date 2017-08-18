@@ -4,5 +4,11 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+  "/api/basket/*": {
+    "target": "https://localhost:443",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
