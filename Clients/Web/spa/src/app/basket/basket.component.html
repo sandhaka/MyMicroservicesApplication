@@ -1,4 +1,16 @@
 <div class="container">
+  <div class="well well-sm">
+    <div class="btn-group">
+      <button (click)="deleteCurrentBasket()" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-remove-sign"></span>Delete cart
+      </button>
+    </div>
+    <div class="btn-group pull-right">
+      <button (click)="logout()" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-log-out"></span>
+      </button>
+    </div>
+  </div>
   <div class="page-header">
     <h1>Basket</h1>
   </div>
@@ -16,12 +28,12 @@
             </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of basket.basketItems">
-                <td>{{item.productName}}</td>
-                <td>{{item.unitPrice | currency}}</td>
-                <td>{{item.units}}</td>
-                <td>{{item.unitPrice*item.units | currency}}</td>
-              </tr>
+            <tr *ngFor="let item of basket.basketItems">
+              <td>{{item.productName}}</td>
+              <td>{{item.unitPrice | currency}}</td>
+              <td>{{item.units}}</td>
+              <td>{{item.unitPrice*item.units | currency}}</td>
+            </tr>
             </tbody>
           </table>
         </div>

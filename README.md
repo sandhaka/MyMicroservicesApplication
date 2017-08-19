@@ -1,10 +1,16 @@
-# ASP NET Core / Docker / SPA - Microservices Example application
+ASP.NET Core / Docker / SPA - Microservices oriented application example
 ---
-*Work in progress*
---
+-- *Work in progress* --
+---
+
+### Intro 
+This project contains several implementation examples of habitual patterns to build a microservices oriented application with asp.NET core, Docker and Angular.
+I took much inspiration from the [.Net Microservices Architecture eBook](https://www.microsoft.com/net/download/thank-you/microservices-architecture-ebook).
+Contains examples about Domain-Driven-Design, S.O.L.I.D. and CQRS patterns.
+
 ![alt text](http://turnoff.us/image/en/monolith-retirement.png)
 
-### How to run the solution:
+#### How to run the solution:
 ```sh
 $ docker-compose -c docker-compose.dev.yml build
 ```
@@ -17,7 +23,7 @@ $ docker-compose -c docker-compose.dev.yml up --build -d
 ```
 Navigate to http://your-docker-host-name-or-ip/
 
-### Authentication:
+#### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).
 
 First, SPA retrieve from the authentication service an access token. It'll be expire in one week (7 days).
@@ -26,12 +32,12 @@ This strategy seems acceptable for a web application.
 
 Initial incpit from this [discussion](https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration/26834685#26834685).
 
-### Database:
+#### Database:
 I use MySQL to keep users informations running on the 'db' container with a mapping volume on the host machine.
 
 dotnet-ef migrations to database versioning.
 
-### Requirements:
+#### Requirements:
 For each aspnet core service you may need to restore packages:
 ```sh
 $ dotnet restore
@@ -67,7 +73,7 @@ For Authorization, Orders and Catalog services you need to initialize the mySQL 
 dotnet ef database -v update
 ```
 
-### Notes about the frontend:
+#### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
 
 .1 Run the webpack-dev-server with a local backend services (ex. if you want to debug a service locally with the frontend as client). Configure the proxy with the desired redirects for the routes, for example I want to debug the login page using the authorization service run locally:

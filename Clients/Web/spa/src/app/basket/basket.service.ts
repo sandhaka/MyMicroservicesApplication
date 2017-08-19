@@ -34,6 +34,13 @@ export class BasketService {
       .map((response: Response) => response.json());
   }
 
+  deleteBasket() : Observable<any> {
+    return this.http.delete(
+      this.serverConfig.basketServer + `/api/basket/${this.authService.getCurrentUserId()}`,
+      this.getOptions())
+      .map((response: Response) => response.json());
+  }
+
   private getOptions() : RequestOptions {
     // add authorization header with jwt token
     let headers = new Headers({ 'Authorization': 'Bearer ' + this.authService.token });
