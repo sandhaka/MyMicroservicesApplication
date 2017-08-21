@@ -63,14 +63,6 @@ export class BasketComponent implements OnInit {
   }
 
   checkoutOrder() {
-    let orderItems = [];
-    this.basket.basketItems.forEach(item => {
-      orderItems.push({
-        productId: item.productId,
-        productName: item.productName,
-        unitPrice: item.unitPrice,
-        units: item.units});
-    });
     this.router.navigate(['/checkout']);
   }
 }
