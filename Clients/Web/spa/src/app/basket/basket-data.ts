@@ -1,8 +1,8 @@
-import {BasketDataItem} from "./basket-data-item";
+import {ProductData} from "../core/shared/product-data";
 
 export class BasketData {
   identity: string;
-  basketItems: BasketDataItem[];
+  basketItems: ProductData[];
 
   constructor(identity: string) {
     this.identity = identity;

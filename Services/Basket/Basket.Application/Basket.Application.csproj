@@ -3,7 +3,6 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="IntegrationEvents" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

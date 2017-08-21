@@ -1,4 +1,4 @@
-export class ProductData {
+export class ProductShopData {
 
   constructor(id: number, productName: string, unitPrice: number, _package: string, assets: number) {
     this.UnitPrice = unitPrice;

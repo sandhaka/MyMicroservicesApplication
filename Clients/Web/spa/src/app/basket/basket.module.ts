@@ -12,8 +12,7 @@ import {CommonModule} from "@angular/common";
     CoreModule,
     CommonModule,
     RouterModule.forRoot(
-      basketRoutes,
-      {enableTracing: true}
+      basketRoutes
     )
   ],
   exports: [],

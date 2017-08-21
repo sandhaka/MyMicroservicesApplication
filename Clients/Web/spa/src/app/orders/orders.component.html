@@ -1,0 +1,121 @@
+<order-confirmation *ngIf="orderSubmitted"></order-confirmation>
+
+<div *ngIf="!orderSubmitted" class="container">
+  <div class="well well-sm">
+    <div class="btn-group">
+      <button (click)="goBack()" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-backward"></span>Cancel
+      </button>
+    </div>
+    <div class="btn-group pull-right">
+      <button (click)="logout()" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-log-out"></span>
+      </button>
+    </div>
+  </div>
+  <div class="page-header">
+    <h1>Checkout order</h1>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="row">
+        <div class="col-xs-12">
+          <table id="simple-table" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+              <th class="center">Product name</th>
+              <th class="center">Unit Price</th>
+              <th class="center">Quantity</th>
+              <th class="center">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of orderCommandDto.orderItems">
+              <td>{{item.productName}}</td>
+              <td>{{item.unitPrice | currency}}</td>
+              <td>{{item.units}}</td>
+              <td>{{item.unitPrice*item.units | currency}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="pull-right">
+            <span class="text-info">Total:  {{getTotalPrice() | currency}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+          <legend>Payment card details:</legend>
+          <div class="form-group">
+            <div class="row" style="padding: 5px">
+              <div class="col-md-10">
+                <div class="col-md-4">
+                  <label>Card number:</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" formControlName="cardNumber" class="form-control">
+                  <span style="color: red" *ngIf="formErrors.cardNumber">{{formErrors.cardNumber}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-md-10">
+                <div class="col-md-4">
+                  <label>Holder name:</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" formControlName="cardHolderName" class="form-control">
+                  <span style="color: red" *ngIf="formErrors.cardHolderName">{{formErrors.cardHolderName}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-md-10">
+                <div class="col-md-4">
+                  <label>Security number:</label>
+                </div>
+                <div class="col-md-2">
+                  <input type="text" formControlName="cardSecurityNumber" class="form-control">
+                  <span style="color: red" *ngIf="formErrors.cardSecurityNumber">{{formErrors.cardSecurityNumber}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-md-10">
+                <div class="col-md-4">
+                  <label>Expiration:</label>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <select class="form-control" [ngModel]="cardExpMonth" formControlName="cardExpirationMonth">
+                        <option *ngFor="let c of months" [ngValue]="c">{{c}}</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <select class="form-control" [ngModel]="cardExpYear" formControlName="cardExpirationYear">
+                        <option *ngFor="let c of years" [ngValue]="c">{{c}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="well well-sm">
+              <div class="form-group">
+                <button [disabled]="!form.valid" type="submit" class="btn btn-primary">Pay</button>
+                <span style="color: red" *ngIf="paymentError">{{paymentError}}</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

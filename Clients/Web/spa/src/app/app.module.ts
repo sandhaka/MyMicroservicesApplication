@@ -7,6 +7,7 @@ import {appRoutes} from "./app.routes";
 import {LoginModule} from "./login/login.module";
 import {ShopModule} from "./shop/shop.module";
 import {CoreModule} from "./core/core.module";
+import {OrdersModule} from "./orders/orders.module";
 
 @NgModule({
   declarations: [
@@ -16,12 +17,12 @@ import {CoreModule} from "./core/core.module";
     BrowserModule,
     NgbModule.forRoot(),
     RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true }
+      appRoutes
     ),
     CoreModule,
     LoginModule,
-    ShopModule
+    ShopModule,
+    OrdersModule
   ],
   providers: [],
   bootstrap: [AppComponent]

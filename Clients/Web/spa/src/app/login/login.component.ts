@@ -37,16 +37,15 @@ export class LoginComponent implements OnInit {
     this.userDto = new UserData();
     this.router = router;
     this.authService = authService;
+
+    this.buildForm();
   }
 
   ngOnInit() {
-
     if(this.authService.tokenCheck()) {
       this.router.navigate(['/shop']);
       return;
     }
-
-    this.buildForm();
   }
 
   /**

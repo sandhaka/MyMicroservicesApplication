@@ -4,8 +4,7 @@ import {AuthenticationService} from "../core/security/authentication.service";
 import {Router} from "@angular/router";
 import {BasketService} from "../basket/basket.service";
 import {BasketData} from "../basket/basket-data";
-import {ProductData} from "./product-data";
-import {forEach} from "@angular/router/src/utils/collection";
+import {ProductShopData} from "./product-shop-data";
 
 @Component({
   selector: 'shop-component',
@@ -15,7 +14,7 @@ import {forEach} from "@angular/router/src/utils/collection";
 
 export class ShopComponent implements OnInit {
 
-  products: ProductData[];
+  products: ProductShopData[];
   basket: BasketData;
 
   private shopService: ShopService;
@@ -41,7 +40,7 @@ export class ShopComponent implements OnInit {
   ngOnInit() {
     this.shopService.getProducts().subscribe((data) => {
         data.forEach(item => {
-          this.products.push(new ProductData(
+          this.products.push(new ProductShopData(
             item.id,
             item.productName,
             item.unitPrice,
@@ -73,7 +72,7 @@ export class ShopComponent implements OnInit {
     this.viewType = 'grid';
   }
 
-  addToBasket(product: ProductData) {
+  addToBasket(product: ProductShopData) {
 
     this.basket.addItem(product.Id,product.ProductName,product.UnitPrice,1);
 

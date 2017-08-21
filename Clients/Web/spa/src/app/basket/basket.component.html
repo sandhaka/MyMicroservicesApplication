@@ -25,22 +25,45 @@
               <th class="center">Unit Price</th>
               <th class="center">Quantity</th>
               <th class="center">Total</th>
+              <th>Remove</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let item of basket.basketItems">
               <td>{{item.productName}}</td>
               <td>{{item.unitPrice | currency}}</td>
-              <td>{{item.units}}</td>
+              <td>
+                <!--TODO: editable-->
+                {{item.units}}
+              </td>
               <td>{{item.unitPrice*item.units | currency}}</td>
+              <td class="text-center">
+                <button>
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </td>
             </tr>
             </tbody>
           </table>
         </div>
       </div>
       <div class="row">
-        <div>Total:</div>
-        <div class="pull-right">{{basket.getTotalPrice()}}</div>
+        <div class="col-xs-12">
+          <div class="pull-right">
+            <span class="text-info">Total:  {{basket.getTotalPrice() | currency}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="well well-sm">
+          <div class="btn-group">
+            <button [disabled]="basket.basketItems.length == 0"
+                    (click)="checkoutOrder()"
+                    class="btn btn-primary btn-sm">
+              Proceed to order
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
