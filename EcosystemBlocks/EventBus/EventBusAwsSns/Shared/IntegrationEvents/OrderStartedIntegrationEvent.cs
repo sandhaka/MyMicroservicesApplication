@@ -9,18 +9,14 @@ namespace EventBusAwsSns.Shared.IntegrationEvents
     public class OrderStartedIntegrationEvent : IntegrationEvent
     {
         [DataMember]
-        public int OrderId { get; set; }
-
-        [DataMember]
         public List<OrderItemInfo> OrderItems { get; set; }
         
         [DataMember]
         public string UserId { get; }
 
-        public OrderStartedIntegrationEvent(Guid guid, string userId, DateTime creation, int orderId, List<OrderItemInfo> orderItems) 
+        public OrderStartedIntegrationEvent(Guid guid, string userId, DateTime creation, List<OrderItemInfo> orderItems) 
             : base(guid, creation)
         {
-            OrderId = orderId;
             OrderItems = orderItems;
             UserId = userId;
         }

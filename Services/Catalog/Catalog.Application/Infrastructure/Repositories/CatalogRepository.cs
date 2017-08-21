@@ -28,9 +28,15 @@ namespace Catalog.Application.Infrastructure.Repositories
             {
                 var product = _context.Products.Find(productInfo.ProductId);
 
+                if (product == null)
+                {
+                    continue;
+                }
+                
                 if (productInfo.Assets > product.Assets)
                 {
-                    _logger.LogError("A order item exceed the availability of the product");
+                    _logger.LogError($"A order item exceed the availability of the product, " +
+                                     $"available: {product.Assets}, requested: {productInfo.Assets}");
                     continue;
                 }
                 

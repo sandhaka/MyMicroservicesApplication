@@ -20,7 +20,6 @@ namespace Catalog.Application.IntegrationEvents
         public Task Handle(OrderStartedIntegrationEvent @event)
         {
             _logger.LogInformation($"Received integration event Order started. " +
-                                   $"OrderId: {@event.OrderId}, " +
                                    $"Creation date: {@event.CreationDate}");
             
             return _catalogRepository.UpdateProductsAssetsAsync(@event.OrderItems);

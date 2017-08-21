@@ -45,7 +45,7 @@ namespace Orders.Application.DomainEventsHandler
             });
             
             var integrationEvent = new OrderStartedIntegrationEvent(
-                Guid.NewGuid(), paymentMethodVerifiedEvent.Buyer.IdentityGuid, DateTime.UtcNow, order.Id, items);
+                Guid.NewGuid(), paymentMethodVerifiedEvent.Buyer.IdentityGuid, DateTime.UtcNow, items);
 
             await _orderingIntegrationEventService.PublishThroughEventBusAsync(integrationEvent);
 
