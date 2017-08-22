@@ -33,7 +33,7 @@ export class ShopComponent implements OnInit {
     this.router = router;
     this.basketService = basketService;
 
-    this.basket = new BasketData(this.authService.getCurrentUserId());
+    this.basket = new BasketData();
     this.products = [];
   }
 

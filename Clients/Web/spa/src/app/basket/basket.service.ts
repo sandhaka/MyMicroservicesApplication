@@ -21,7 +21,7 @@ export class BasketService {
 
   getBasket() : Observable<any> {
     return this.http.get(
-      this.serverConfig.basketServer + `/api/basket/${this.authService.getCurrentUserId()}`,
+      this.serverConfig.basketServer + `/api/basket`,
       this.getOptions())
       .map((response: Response) => response.json());
   }
@@ -36,7 +36,7 @@ export class BasketService {
 
   deleteBasket() : Observable<any> {
     return this.http.delete(
-      this.serverConfig.basketServer + `/api/basket/${this.authService.getCurrentUserId()}`,
+      this.serverConfig.basketServer + `/api/basket`,
       this.getOptions())
       .map((response: Response) => response.json());
   }

@@ -1,6 +1,10 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,7 +34,22 @@ namespace Basket.Application
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                TokenValidationParameters = tokenValidationParameters
+                TokenValidationParameters = tokenValidationParameters,
+                Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        // Add the access_token as a claim, as we may actually need it
+                        var accessToken = context.SecurityToken as JwtSecurityToken;
+                        if (accessToken != null)
+                        {
+                            ClaimsIdentity identity = context.Ticket.Principal.Identity as ClaimsIdentity;
+                            identity?.AddClaim(new Claim("access_token", accessToken.RawData));
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                }
             });
         }
     }

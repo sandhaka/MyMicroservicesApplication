@@ -6,12 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Catalog.Application.IntegrationEvents
 {
-    public class OrderStartedIntegrationEventHandler : IIntegrationEventHandler<OrderStartedIntegrationEvent>
+    public class CatalogUpdateOnOrderStartedIntegrationEventHandler : IIntegrationEventHandler<OrderStartedIntegrationEvent>
     {
         private readonly ILogger _logger;
         private readonly ICatalogRepository _catalogRepository;
 
-        public OrderStartedIntegrationEventHandler(ILogger<OrderStartedIntegrationEventHandler> iLogger, ICatalogRepository catalogRepository)
+        public CatalogUpdateOnOrderStartedIntegrationEventHandler(
+            ILogger<CatalogUpdateOnOrderStartedIntegrationEventHandler> iLogger, 
+            ICatalogRepository catalogRepository)
         {
             _catalogRepository = catalogRepository;
             _logger = iLogger;
@@ -19,8 +21,9 @@ namespace Catalog.Application.IntegrationEvents
         
         public Task Handle(OrderStartedIntegrationEvent @event)
         {
-            _logger.LogInformation($"Received integration event Order started. " +
-                                   $"Creation date: {@event.CreationDate}");
+            _logger.LogInformation($"Received integration event Order started, " +
+                                   $"Creation date: {@event.CreationDate}, " +
+                                   $"Update catalog");
             
             return _catalogRepository.UpdateProductsAssetsAsync(@event.OrderItems);
         }

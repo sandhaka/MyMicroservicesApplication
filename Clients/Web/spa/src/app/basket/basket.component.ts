@@ -4,7 +4,6 @@ import {BasketData} from "./basket-data";
 import {AuthenticationService} from "../core/security/authentication.service";
 import {Router} from "@angular/router";
 import {OrdersService} from "../orders/orders.service";
-import {ProductData} from "../core/shared/product-data";
 
 @Component({
   selector: 'basket',
@@ -29,7 +28,7 @@ export class BasketComponent implements OnInit {
     this.authService = authService;
     this.ordersService = ordersService;
     this.router = router;
-    this.basket = new BasketData("");
+    this.basket = new BasketData();
 
   }
 

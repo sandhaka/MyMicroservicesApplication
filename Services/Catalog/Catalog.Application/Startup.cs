@@ -80,7 +80,7 @@ namespace Catalog.Application
             services.AddSingleton<IConfiguration>(Configuration); /* Make project configuration available */
             
             // Add event handlers
-            services.AddTransient<OrderStartedIntegrationEventHandler>();
+            services.AddTransient<CatalogUpdateOnOrderStartedIntegrationEventHandler>();
             
             // Add https features
             services.Configure<MvcOptions>(options =>
@@ -116,8 +116,8 @@ namespace Catalog.Application
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-            eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>(() =>
-                app.ApplicationServices.GetRequiredService<OrderStartedIntegrationEventHandler>());
+            eventBus.Subscribe<OrderStartedIntegrationEvent, CatalogUpdateOnOrderStartedIntegrationEventHandler>(() =>
+                app.ApplicationServices.GetRequiredService<CatalogUpdateOnOrderStartedIntegrationEventHandler>());
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Orders.Domain.AggregatesModel.BuyerAggregate
 
             if (existingPaymentMethod != null)
             {
-                AddDomainEvent(new PaymentMethodVerifiedEvent(this, existingPaymentMethod, orderId));
+                AddDomainEvent(new PaymentMethodVerifiedDomainEvent(this, existingPaymentMethod, orderId));
 
                 return existingPaymentMethod;
             }
@@ -42,7 +42,7 @@ namespace Orders.Domain.AggregatesModel.BuyerAggregate
             
             _paymentMethods.Add(paymentMethod);
             
-            AddDomainEvent(new PaymentMethodVerifiedEvent(this, paymentMethod, orderId));
+            AddDomainEvent(new PaymentMethodVerifiedDomainEvent(this, paymentMethod, orderId));
 
             return paymentMethod;
         }

@@ -1,11 +1,9 @@
 import {ProductData} from "../core/shared/product-data";
 
 export class BasketData {
-  identity: string;
   basketItems: ProductData[];
 
-  constructor(identity: string) {
-    this.identity = identity;
+  constructor() {
     this.basketItems = [];
   }
 
@@ -32,7 +30,6 @@ export class BasketData {
   }
 
   copyFrom(data: any) {
-    this.identity = data.identity;
     this.basketItems = []; // Clear current
     data.basketItems.forEach(item => {
       this.basketItems.push(

@@ -1,5 +1,6 @@
 ﻿using Basket.Application.Infrastructure.Repositories;
 using Basket.Application.Models;
+using Basket.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,22 +11,25 @@ namespace Basket.Application.Controllers
     public class BasketController : Controller
     {
         private readonly IBasketRepository _basketRepository;
+        private readonly IIdentityService _identityService;
         
-        public BasketController(IBasketRepository basketRepository)
+        public BasketController(IBasketRepository basketRepository,
+            IIdentityService identityService)
         {
             _basketRepository = basketRepository;
+            _identityService = identityService;
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        [HttpGet]
+        public IActionResult Get()
         {
-            return Ok(_basketRepository.GetBasketAsync(id));
+            return Ok(_basketRepository.GetBasketAsync(_identityService.GetUserIdentity()));
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        [HttpDelete]
+        public IActionResult Delete()
         {
-            return Ok(_basketRepository.DeleteBasketAsync(id));
+            return Ok(_basketRepository.DeleteBasketAsync(_identityService.GetUserIdentity()));
         }
 
         [HttpPost]
