@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using System.Reflection;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
@@ -6,6 +8,7 @@ using EventBus;
 using EventBus.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using IntegrationEventsContext;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +26,7 @@ using Orders.Domain.AggregatesModel.BuyerAggregate;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;
 using Orders.Infrastructure.Repositories;
+using StackExchange.Redis;
 
 namespace Orders.Application
 {
@@ -76,9 +80,22 @@ namespace Orders.Application
                 options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
             })
                 .AddFluentValidation(); /* Using Fluent validation */
+            
+            // Take Redis connection string from environment varible by default
+            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
+            // Otherwise take from the local configuration
+            if (string.IsNullOrEmpty(redisConnectionString))
+                redisConnectionString = Configuration.GetConnectionString("Redis");
+            
+            services.AddSingleton<ConnectionMultiplexer>(sp =>
+            {
+                var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
+                return ConnectionMultiplexer.Connect(ips.First().ToString());
+            });
 
             // Adding services to DI container
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IIntegrationEventsRespository, IntegrationEventsRespository>();
             services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<IBuyerRepository, BuyerRepository>();

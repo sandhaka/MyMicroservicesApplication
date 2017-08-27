@@ -29,7 +29,7 @@ namespace Basket.Application.IntegrationEvents
                                    $"Creation date: {@event.CreationDate}, " +
                                    "Delete basket");
 
-            return _basketRepository.DeleteBasketAsync(_identityService.GetUserIdentity());
+            return _basketRepository.DeleteBasketAsync(@event.UserId);
         }
     }
 }

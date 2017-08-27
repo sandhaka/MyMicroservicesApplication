@@ -19,9 +19,11 @@ services:
             - "9000:443"
         environment:
             CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.ordersDb; Uid=sandhaka; Password=pwd"
+            REDIS_CONNECTION: "redis.data"
             ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
             - mysql.data
+            - redis.data
     catalog:
         build: ./Services/Catalog/Catalog.Application
         image: "sandhaka/mymicsapp_catalog"
@@ -30,9 +32,11 @@ services:
             - "9001:443"
         environment:
             CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.catalogDb; Uid=sandhaka; Password=pwd"
+            REDIS_CONNECTION: "redis.data"
             ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
             - mysql.data
+            - redis.data
     basket:
         build: ./Services/Basket/Basket.Application
         image: "sandhaka/mymicsapp_basket"

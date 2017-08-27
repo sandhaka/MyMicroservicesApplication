@@ -6,6 +6,7 @@ namespace EventBus.Abstractions
     public interface ISubscriptionsManager
     {
         event EventHandler<IntegrationEventReceivedNotificationDto> OnIntegrationEventReceived;
+        event EventHandler<IntegrationEventReceivedNotificationDto> OnIntegrationEventReadyToDelete;
             
         string AddSubscription<T, TH>(Func<TH> handler)
             where T : IntegrationEvent

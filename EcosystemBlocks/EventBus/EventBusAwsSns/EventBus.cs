@@ -10,6 +10,7 @@ using EventBus;
 using EventBus.Abstractions;
 using EventBus.Events;
 using EventBus.Responses;
+using IntegrationEventsContext;
 using Microsoft.Extensions.Configuration;
 
 namespace EventBusAwsSns
@@ -20,6 +21,7 @@ namespace EventBusAwsSns
         private readonly IAmazonSimpleNotificationService _snsClient;
         private readonly IAmazonSQS _amazonSqsClient;
         private readonly IConfiguration _configuration;
+        private readonly IIntegrationEventsRespository _integrationEventsRespository;
         private List<Tuple<string, Thread, CancellationToken>> _pollingThreads;
         
         /// <summary>
@@ -31,14 +33,17 @@ namespace EventBusAwsSns
             IConfiguration configuration,
             ISubscriptionsManager subscriptionsManager, 
             IAmazonSimpleNotificationService simpleNotificationServiceClient, 
+            IIntegrationEventsRespository integrationEventsRespository,
             IAmazonSQS amazonSqsClient)
         {
-            _subscriptionsManager =
-                subscriptionsManager ?? throw new ArgumentNullException(nameof(subscriptionsManager));
-            _snsClient = simpleNotificationServiceClient ??
+            _subscriptionsManager = subscriptionsManager ?? 
+                                    throw new ArgumentNullException(nameof(subscriptionsManager));
+            _snsClient = simpleNotificationServiceClient ?? 
                          throw new ArgumentNullException(nameof(simpleNotificationServiceClient));
             _amazonSqsClient = amazonSqsClient ?? throw new ArgumentNullException(nameof(amazonSqsClient));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _integrationEventsRespository = integrationEventsRespository ??
+                                            throw new ArgumentNullException(nameof(integrationEventsRespository));
             
             _pollingThreads = new List<Tuple<string, Thread, CancellationToken>>();
             
@@ -57,8 +62,8 @@ namespace EventBusAwsSns
                 th.Start(new object[] {configurationSection.Key, cancellationToken});
             }
 
-            // Remove the event message if received correctly
-            _subscriptionsManager.OnIntegrationEventReceived += (sender, message) =>
+            // Remove the event message
+            _subscriptionsManager.OnIntegrationEventReadyToDelete += (sender, message) =>
             {
                 var response = _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest()
                 {
@@ -98,6 +103,12 @@ namespace EventBusAwsSns
                 return null;
             }
 
+            var instance = await _integrationEventsRespository.CreateInstanceAsync<T>();
+            if (instance == null)
+            {
+                //TODO: log and thorw excpetion
+            }
+
             return new EbPublishResponse(response.HttpStatusCode)
             {
                 MessageId = response.MessageId
@@ -119,6 +130,12 @@ namespace EventBusAwsSns
             {
                 return string.Empty;
             }
+
+            var model = _integrationEventsRespository.SetModelAsync<T, TH>();
+            if (model == null)
+            {
+                //TODO: log and throw excpetion
+            }
             
             return _subscriptionsManager.AddSubscription<T, TH>(handler);
         }
@@ -128,14 +145,23 @@ namespace EventBusAwsSns
         /// </summary>
         /// <param name="guid">Subscription guid</param>
         /// <typeparam name="T">Event type</typeparam>
+        /// <typeparam name="TH"></typeparam>
         /// <returns>Result</returns>
-        public bool Unsubscribe<T>(string guid) where T : IntegrationEvent
+        public bool Unsubscribe<T, TH>(string guid)
+            where T : IntegrationEvent
+            where TH : IIntegrationEventHandler<T>
         {
             if (!_subscriptionsManager.HasEventTopic<T>() || !_subscriptionsManager.HasSubscription<T>(guid))
             {
                 return false;
             }
 
+            var model = _integrationEventsRespository.SetModelAsync<T, TH>(false);
+            if (model == null)
+            {
+                //TODO: log and throw excpetion
+            }
+            
             _subscriptionsManager.RemoveSubscription<T>(guid);
 
             return !_subscriptionsManager.HasSubscription<T>(guid);

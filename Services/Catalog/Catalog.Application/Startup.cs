@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using System.Reflection;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Catalog.Application.Filters;
 using Catalog.Application.Infrastructure;
 using Catalog.Application.Infrastructure.Repositories;
-using Catalog.Application.IntegrationEvents;
 using EventBus;
 using EventBus.Abstractions;
-using EventBusAwsSns.Shared.IntegrationEvents;
+using IntegrationEventsContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Catalog.Application
 {
@@ -69,6 +71,19 @@ namespace Catalog.Application
                 options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
             });
             
+            // Take Redis connection string from environment varible by default
+            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
+            // Otherwise take from the local configuration
+            if (string.IsNullOrEmpty(redisConnectionString))
+                redisConnectionString = Configuration.GetConnectionString("Redis");
+            
+            services.AddSingleton<ConnectionMultiplexer>(sp =>
+            {
+                var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
+                return ConnectionMultiplexer.Connect(ips.First().ToString());
+            });
+            
+            services.AddTransient<IIntegrationEventsRespository, IntegrationEventsRespository>();
             services.AddTransient<ICatalogRepository, CatalogRepository>(); /* Catalog repository */
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
             services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
@@ -78,9 +93,6 @@ namespace Catalog.Application
             services.AddAWSService<IAmazonSimpleNotificationService>(); /* Amazon SNS */
             services.AddAWSService<IAmazonSQS>(); /* Amazon SQS */
             services.AddSingleton<IConfiguration>(Configuration); /* Make project configuration available */
-            
-            // Add event handlers
-            services.AddTransient<CatalogUpdateOnOrderStartedIntegrationEventHandler>();
             
             // Add https features
             services.Configure<MvcOptions>(options =>
@@ -116,8 +128,9 @@ namespace Catalog.Application
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-            eventBus.Subscribe<OrderStartedIntegrationEvent, CatalogUpdateOnOrderStartedIntegrationEventHandler>(() =>
-                app.ApplicationServices.GetRequiredService<CatalogUpdateOnOrderStartedIntegrationEventHandler>());
+            // TODO: Put here events handlers
+//            eventBus.Subscribe<OrderStartedIntegrationEvent, ?>(() =>
+//                app.ApplicationServices.GetRequiredService<?>());
         }
     }
 }

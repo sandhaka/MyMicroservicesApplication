@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using EventBus.Abstractions;
 using EventBus.Events;
+using IntegrationEventsContext;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace EventBus
@@ -17,14 +19,22 @@ namespace EventBus
         private readonly Dictionary<string, List<Tuple<string,Delegate>>> _handlers;
         private readonly List<Type> _types;
         private readonly IConfiguration _configuration;
+        private readonly IIntegrationEventsRespository _integrationEventsRespository;
+        private readonly ILogger _logger;
 
         public event EventHandler<IntegrationEventReceivedNotificationDto> OnIntegrationEventReceived;
+        public event EventHandler<IntegrationEventReceivedNotificationDto> OnIntegrationEventReadyToDelete; 
 
-        public SuscriptionManager(IConfiguration configuration)
+        public SuscriptionManager(
+            IConfiguration configuration, 
+            IIntegrationEventsRespository integrationEventsRespository,
+            ILogger<SuscriptionManager> logger)
         {
             _handlers = new Dictionary<string, List<Tuple<string,Delegate>>>();
             _types = new List<Type>();
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger;
+            _integrationEventsRespository = integrationEventsRespository;
         }
         
         public string AddSubscription<T, TH>(Func<TH> handler) where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
@@ -117,6 +127,8 @@ namespace EventBus
 
                     var t = concreteType.GetRuntimeMethod("Handle", new[] {eventType});
                     t.Invoke(handler, new [] {integrationEvent});
+                    
+                    UpdateIntegrationEventContext(eventReceived, eventType, handler.ToString().Split('.').Last());
                 }
             }
         }
@@ -133,5 +145,46 @@ namespace EventBus
         }
 
         private Type GetEventTypeByName(string typeName) => _types.Single(t => t.Name == typeName);
+
+        private void UpdateIntegrationEventContext(
+            IntegrationEventReceivedNotificationDto eventReceived,
+            Type eventType, 
+            string handlerName)
+        {
+            var instances = _integrationEventsRespository.GetIntegrationEventRegisteredInstances().Result;
+
+            if (!instances.Values.Contains(eventType.Name))
+            {
+                OnIntegrationEventReadyToDelete?.Invoke(this, eventReceived);
+                return;
+            }
+            
+            var instance = instances.First(i => i.Value == eventType.Name);
+                    
+            _logger.LogTrace($"Mark sub handler as processed, Guid: {instance.Key}, Event type: {instance.Value}, Handler name: {handlerName}");
+            
+            var updatedInstance = _integrationEventsRespository.MarkSubscriberHandlerAsProcessed(
+                instance.Key,
+                instance.Value,
+                handlerName).Result;
+                    
+            if (updatedInstance == null)
+            {
+                //TODO: throw
+            }
+
+            if (updatedInstance.Subscribers.All(i => i.Item2 == true))
+            {
+                OnIntegrationEventReadyToDelete?.Invoke(this, eventReceived);
+                        
+                var result = _integrationEventsRespository.DeleteInstanceAsync(updatedInstance.Id,
+                    updatedInstance.EventType).Result;
+                        
+                if (!result)
+                {
+                    // TODO Throw 
+                }
+            }
+        }
     }
 }

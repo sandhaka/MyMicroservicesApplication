@@ -15,7 +15,8 @@ namespace EventBus.Abstractions
             where T : IntegrationEvent 
             where TH : IIntegrationEventHandler<T>;
 
-        bool Unsubscribe<T>(string guid)
-            where T : IntegrationEvent;
+        bool Unsubscribe<T, TH>(string guid)
+            where T : IntegrationEvent 
+            where TH : IIntegrationEventHandler<T>;
     }
 }

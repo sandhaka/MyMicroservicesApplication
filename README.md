@@ -48,14 +48,14 @@ dotnet ef database -v update
 
 #### How to run the solution:
 ```sh
-$ docker-compose -c docker-compose.dev.yml build
+$ docker-compose -f docker-compose.dev.yml build
 ```
 ```sh
-$ docker-compose -c docker-compose.dev.yml up
+$ docker-compose -f docker-compose.dev.yml up
 ```
 or build run and detach
 ```sh
-$ docker-compose -c docker-compose.dev.yml up --build -d
+$ docker-compose -f docker-compose.dev.yml up --build -d
 ```
 Navigate to http://your-docker-host-name-or-ip/
 
@@ -104,7 +104,7 @@ For example, to debug the auth_service: look at the Dockerfile.debug version. I 
 
 Use the correct version of docker-compose file to overwrite the configurations, like:
 ```sh
-$ docker-compose -c docker-compose.dev.yml -c docker-compose.debug.yml up --build -d
+$ docker-compose -f docker-compose.dev.yml -f docker-compose.debug.yml up --build -d
 ```
 Execute, on the docker host the ssh server of the container
 ```sh

@@ -5,11 +5,15 @@ using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Basket.Application.Filters;
 using Basket.Application.Infrastructure.Repositories;
+using Basket.Application.IntegrationEvents;
 using Basket.Application.Services;
 using EventBus;
 using EventBus.Abstractions;
+using EventBusAwsSns.Shared.IntegrationEvents;
+using IntegrationEventsContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,10 +67,14 @@ namespace Basket.Application
                 return ConnectionMultiplexer.Connect(ips.First().ToString());
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IIntegrationEventsRespository, IntegrationEventsRespository>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<IBasketRepository, BasketRepository>();
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
             services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
+
+            services.AddTransient<DeleteBasketOnOrderStartedIntegrationEventHandler>();
            
             // Amazon services setup
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions()); /* Setup credentails and others options */
@@ -101,7 +109,9 @@ namespace Basket.Application
         private void ConfigureEventBus(IApplicationBuilder app)
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-            // TODO
+
+            eventBus.Subscribe<OrderStartedIntegrationEvent, DeleteBasketOnOrderStartedIntegrationEventHandler>(() =>
+                app.ApplicationServices.GetRequiredService<DeleteBasketOnOrderStartedIntegrationEventHandler>());
         }
     }
 }

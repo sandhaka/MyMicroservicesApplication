@@ -35,6 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{9CFEC3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Application", "Services\Basket\Basket.Application\Basket.Application.csproj", "{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationEventsContext", "IntegrationEventsContext", "{8254FD3F-8F9B-4EBF-9571-E685C1A609AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEventsContext", "EcosystemBlocks\IntegrationEventsContext\IntegrationEventsContext\IntegrationEventsContext.csproj", "{DA892290-B0A9-44E9-83BB-F52D733FB2FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +77,10 @@ Global
 		{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,5 +99,7 @@ Global
 		{09497B35-0BDE-4847-B7A2-818EA68A9535} = {1240DE01-D7F1-484A-8F3E-34E08E2CA81B}
 		{9CFEC32E-4DC6-4B28-93EC-4D60B5802A62} = {36648EFB-9AE5-46F6-AD0F-92DA914CF338}
 		{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4} = {9CFEC32E-4DC6-4B28-93EC-4D60B5802A62}
+		{8254FD3F-8F9B-4EBF-9571-E685C1A609AF} = {C4FBB18F-1F3D-4884-885B-D47725823358}
+		{DA892290-B0A9-44E9-83BB-F52D733FB2FE} = {8254FD3F-8F9B-4EBF-9571-E685C1A609AF}
 	EndGlobalSection
 EndGlobal
