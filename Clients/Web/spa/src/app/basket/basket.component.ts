@@ -64,4 +64,8 @@ export class BasketComponent implements OnInit {
   checkoutOrder() {
     this.router.navigate(['/checkout']);
   }
+
+  backToShop() {
+    this.router.navigate(['/shop']);
+  }
 }

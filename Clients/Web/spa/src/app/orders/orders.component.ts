@@ -173,7 +173,7 @@ export class OrdersComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/basket']);
+    this.router.navigate(['/shop']);
   }
 
   logout() {
