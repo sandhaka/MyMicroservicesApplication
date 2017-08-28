@@ -68,10 +68,12 @@ This strategy seems acceptable for a web application.
 
 Initial incpit from this [discussion](https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration/26834685#26834685).
 
-#### Database:
-I use MySQL to keep users informations running on the 'db' container with a mapping volume on the host machine.
+#### Databases:
+I using [MySQL](https://hub.docker.com/_/mysql/) to keep users informations running on the 'db' container with a mapping volume on the host machine.
 
 dotnet-ef migrations to database versioning.
+
+To store basket and integration event instance and handlers processing status informations, I using the [redis server docker image](https://hub.docker.com/_/redis/).
 
 #### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
