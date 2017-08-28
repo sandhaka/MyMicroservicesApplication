@@ -127,6 +127,8 @@ namespace Catalog.Application
         private void ConfigureEventBus(IApplicationBuilder app)
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+            
+            eventBus.Init();
 
             // TODO: Put here events handlers
 //            eventBus.Subscribe<OrderStartedIntegrationEvent, ?>(() =>

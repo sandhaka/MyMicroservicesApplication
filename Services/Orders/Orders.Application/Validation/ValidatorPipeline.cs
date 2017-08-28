@@ -27,7 +27,6 @@ namespace Orders.Application.Validation
 
             if (failures.Count != 0)
             {
-                // TODO: Intercept this
                 throw new ValidationException(failures);
             }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IntegrationEventsContext.Models;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
@@ -11,10 +12,15 @@ namespace IntegrationEventsContext
     public class IntegrationEventsRespository : IIntegrationEventsRespository
     {
         private readonly ConnectionMultiplexer _connectionMultiplexer;
+        private readonly ILogger<IntegrationEventsRespository> _logger;
 
-        public IntegrationEventsRespository(ConnectionMultiplexer connectionMultiplexer)
+        public IntegrationEventsRespository(
+            ConnectionMultiplexer connectionMultiplexer,
+            ILogger<IntegrationEventsRespository> logger)
         {
-            _connectionMultiplexer = connectionMultiplexer;
+            _connectionMultiplexer =
+                connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
         public async Task<IntegrationEvent> GetModelAsync<T>()
@@ -75,9 +81,6 @@ namespace IntegrationEventsContext
 
             var guid = Guid.NewGuid().ToString();
             
-            // Debug
-            Console.WriteLine("Created new integration event instance with guid: " + guid);
-
             var model = await GetModelAsync<T>();
             if (model == null)
             {
@@ -107,7 +110,7 @@ namespace IntegrationEventsContext
             
             if (eInstances == null)
             {
-                //TODO: log and thorw excpetion
+                _logger.LogError("Error on set integration event registered instances");
             }
 
             return await GetInstanceAsync<T>(guid);
@@ -125,7 +128,7 @@ namespace IntegrationEventsContext
             
             if (eInstances == null)
             {
-                //TODO: log and thorw excpetion
+                _logger.LogError("Error on set integration event registered instances");
             }
 
             return await database.KeyDeleteAsync(guid);
@@ -150,10 +153,24 @@ namespace IntegrationEventsContext
             string subscriberName)
         {
             var inst = await GetInstanceAsync(guid, eventTypeName);
-            var sub = inst.Subscribers.First(i => i.Item1 == subscriberName);
+
+            if (inst == null)
+            {
+                _logger.LogError($"Error on get instance, guid: {guid}, event type: {eventTypeName}");
+                throw new NullReferenceException();
+            }
+            
+            var sub = inst.Subscribers.FirstOrDefault(i => i.Item1 == subscriberName);
+
+            if (sub == null)
+            {
+                _logger.LogWarning($"No subscriber '{subscriberName}' found in the integration event instance: {inst}");
+            }
+            
             var newValue = new Tuple<string, bool>(sub.Item1, true);
             inst.Subscribers.Remove(sub);
             inst.Subscribers.Add(newValue);
+            
             return await UpdateInstanceAsync(inst);
         }
 

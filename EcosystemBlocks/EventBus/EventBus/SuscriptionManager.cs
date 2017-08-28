@@ -106,8 +106,8 @@ namespace EventBus
 
             if (integrationEvent == null)
             {
+                _logger.LogError("Error on integration event deserialization");
                 return;
-                // TODO Add log
             }
             
             OnIntegrationEventReceived?.Invoke(this, eventReceived);
@@ -127,8 +127,11 @@ namespace EventBus
 
                     var t = concreteType.GetRuntimeMethod("Handle", new[] {eventType});
                     t.Invoke(handler, new [] {integrationEvent});
+
+                    var handlerName = handler.ToString().Split('.').Last();
                     
-                    UpdateIntegrationEventContext(eventReceived, eventType, handler.ToString().Split('.').Last());
+                    // Update integration event context
+                    UpdateIntegrationEventContext(eventReceived, eventType, handlerName);
                 }
             }
         }
@@ -153,8 +156,9 @@ namespace EventBus
         {
             var instances = _integrationEventsRespository.GetIntegrationEventRegisteredInstances().Result;
 
-            if (!instances.Values.Contains(eventType.Name))
+            if (instances == null || !instances.Values.Contains(eventType.Name))
             {
+                _logger.LogWarning($"No integration event {eventType.Name} instance present, deleting message.");
                 OnIntegrationEventReadyToDelete?.Invoke(this, eventReceived);
                 return;
             }
@@ -170,19 +174,22 @@ namespace EventBus
                     
             if (updatedInstance == null)
             {
-                //TODO: throw
+                throw new NullReferenceException();
             }
 
+            // Check if the all subscribers have done
             if (updatedInstance.Subscribers.All(i => i.Item2 == true))
             {
+                // Delete the message on the queue
                 OnIntegrationEventReadyToDelete?.Invoke(this, eventReceived);
                         
+                // Delete instance record
                 var result = _integrationEventsRespository.DeleteInstanceAsync(updatedInstance.Id,
                     updatedInstance.EventType).Result;
                         
                 if (!result)
                 {
-                    // TODO Throw 
+                    _logger.LogError("Error on deleting integration event instance");
                 }
             }
         }

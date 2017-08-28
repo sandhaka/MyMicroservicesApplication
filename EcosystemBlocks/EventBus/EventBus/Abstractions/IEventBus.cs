@@ -8,6 +8,8 @@ namespace EventBus.Abstractions
 {
     public interface IEventBus
     {
+        void Init();
+        
         Task<EbPublishResponse> PublishAsync<T>(string message, CancellationToken cancellationToken)
             where T : IntegrationEvent;
 

@@ -12,6 +12,7 @@ using EventBus.Events;
 using EventBus.Responses;
 using IntegrationEventsContext;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace EventBusAwsSns
 {
@@ -22,7 +23,8 @@ namespace EventBusAwsSns
         private readonly IAmazonSQS _amazonSqsClient;
         private readonly IConfiguration _configuration;
         private readonly IIntegrationEventsRespository _integrationEventsRespository;
-        private List<Tuple<string, Thread, CancellationToken>> _pollingThreads;
+        private readonly List<Tuple<string, Thread, CancellationToken>> _pollingThreads;
+        private readonly ILogger<EventBus> _logger;
         
         /// <summary>
         /// ctor,
@@ -34,19 +36,23 @@ namespace EventBusAwsSns
             ISubscriptionsManager subscriptionsManager, 
             IAmazonSimpleNotificationService simpleNotificationServiceClient, 
             IIntegrationEventsRespository integrationEventsRespository,
-            IAmazonSQS amazonSqsClient)
+            IAmazonSQS amazonSqsClient, ILogger<EventBus> logger)
         {
-            _subscriptionsManager = subscriptionsManager ?? 
-                                    throw new ArgumentNullException(nameof(subscriptionsManager));
-            _snsClient = simpleNotificationServiceClient ?? 
-                         throw new ArgumentNullException(nameof(simpleNotificationServiceClient));
+            _subscriptionsManager = subscriptionsManager ?? throw new ArgumentNullException(nameof(subscriptionsManager));
+            _snsClient = simpleNotificationServiceClient ?? throw new ArgumentNullException(nameof(simpleNotificationServiceClient));
             _amazonSqsClient = amazonSqsClient ?? throw new ArgumentNullException(nameof(amazonSqsClient));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _integrationEventsRespository = integrationEventsRespository ??
-                                            throw new ArgumentNullException(nameof(integrationEventsRespository));
+            _integrationEventsRespository = integrationEventsRespository ?? throw new ArgumentNullException(nameof(integrationEventsRespository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             
             _pollingThreads = new List<Tuple<string, Thread, CancellationToken>>();
-            
+        }
+
+        /// <summary>
+        /// Initialize the event bus
+        /// </summary>
+        public void Init()
+        {
             var topicsConfig = _configuration.GetSection("AwsEventBus:Topics").GetChildren();
             
             // Polling threads
@@ -61,8 +67,8 @@ namespace EventBusAwsSns
                 
                 th.Start(new object[] {configurationSection.Key, cancellationToken});
             }
-
-            // Remove the event message
+            
+            // Handle the delete message request from the bus
             _subscriptionsManager.OnIntegrationEventReadyToDelete += (sender, message) =>
             {
                 var response = _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest()
@@ -73,8 +79,7 @@ namespace EventBusAwsSns
 
                 if (response.HttpStatusCode != HttpStatusCode.OK)
                 {
-                    // TODO Log error
-                    Console.WriteLine("Error on message deleting");
+                    _logger.LogError($"Error on aws queue message deleting, response metadata: {response.ResponseMetadata}");
                 }
             };
         }
@@ -106,7 +111,7 @@ namespace EventBusAwsSns
             var instance = await _integrationEventsRespository.CreateInstanceAsync<T>();
             if (instance == null)
             {
-                //TODO: log and thorw excpetion
+                throw new Exception($"Error on creation of the integration event {typeof(T).Name} instance");
             }
 
             return new EbPublishResponse(response.HttpStatusCode)
@@ -134,7 +139,7 @@ namespace EventBusAwsSns
             var model = _integrationEventsRespository.SetModelAsync<T, TH>();
             if (model == null)
             {
-                //TODO: log and throw excpetion
+                throw new Exception($"Error on subscription to the integration event {typeof(T).Name}");
             }
             
             return _subscriptionsManager.AddSubscription<T, TH>(handler);
@@ -159,7 +164,7 @@ namespace EventBusAwsSns
             var model = _integrationEventsRespository.SetModelAsync<T, TH>(false);
             if (model == null)
             {
-                //TODO: log and throw excpetion
+                throw new Exception($"Error on usubscription to the integration event {typeof(T).Name}");
             }
             
             _subscriptionsManager.RemoveSubscription<T>(guid);
@@ -203,7 +208,7 @@ namespace EventBusAwsSns
                 }
                 catch(Exception e)
                 {
-                   // TODO: Handle error and write to log
+                    _logger.LogError($"Error on polling: {e.Message}, stacktrace: {e.StackTrace}");
                 }
             }
         }

@@ -109,6 +109,8 @@ namespace Basket.Application
         private void ConfigureEventBus(IApplicationBuilder app)
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+            
+            eventBus.Init();
 
             eventBus.Subscribe<OrderStartedIntegrationEvent, DeleteBasketOnOrderStartedIntegrationEventHandler>(() =>
                 app.ApplicationServices.GetRequiredService<DeleteBasketOnOrderStartedIntegrationEventHandler>());

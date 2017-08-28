@@ -148,7 +148,8 @@ namespace Orders.Application
 
         private void ConfigureEventBus(IApplicationBuilder app)
         {
-            
+            // Init the event bus
+            app.ApplicationServices.GetRequiredService<IEventBus>().Init();
         }
 
         private void RegisterIntegrationEventHandlers(IServiceCollection services)

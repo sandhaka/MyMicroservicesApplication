@@ -41,8 +41,6 @@ namespace Basket.Application.Infrastructure.Repositories
                 _logger.LogWarning("Problem occur on basket set");
                 return null;
             }
-            
-            _logger.LogInformation("Basket item persisted successfully");
 
             return await GetBasketAsync(_identityService.GetUserIdentity());
         }

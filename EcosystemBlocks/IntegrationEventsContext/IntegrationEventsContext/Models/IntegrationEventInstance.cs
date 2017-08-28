@@ -11,5 +11,10 @@ namespace IntegrationEventsContext.Models
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
         }
+
+        public override string ToString()
+        {
+            return $"[EventType: {EventType}, Id: {Id}, Subscribers: {SubscribersToString()}]";
+        }
     }
 }
