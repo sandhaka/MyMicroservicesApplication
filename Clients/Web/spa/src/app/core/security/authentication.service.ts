@@ -39,7 +39,13 @@ export class AuthenticationService {
           let tokenData = UtilityService.decodeToken(this.token);
 
           // store username and jwt token in local storage to keep user logged in between page refreshes
-          let userData = JSON.stringify({ username: username, userId: tokenData.userId, token: token });
+          let userData = JSON.stringify(
+            {
+              username: username,
+              userId: tokenData.userId,
+              token: token,
+              exp: Date.now() + tokenData.exp
+            });
           localStorage.setItem('currentUser', userData);
 
           // return true to indicate successful login
@@ -65,10 +71,11 @@ export class AuthenticationService {
 
     if(this.token) {
 
-      let tokenData = UtilityService.decodeToken(this.token);
+      let tokenData = JSON.parse(localStorage.getItem('currentUser'));
 
       // If the token is going to expire in less of a day renew it
-      if(Date.now() + tokenData.exp > Date.now() - 86400) {
+      if(tokenData.exp > Date.now() &&
+        tokenData.exp < Date.now() + 86400) {
 
         this.tokenRenew().subscribe((result) => {
           if(!result) {
@@ -79,8 +86,9 @@ export class AuthenticationService {
 
         return true;
       }
-      else if(Date.now() + tokenData.exp >= Date.now()) {
+      else if(tokenData.exp < Date.now()) {
         console.debug("Token expired");
+        localStorage.removeItem('currentUser');
         return false;
       }
 
@@ -88,14 +96,6 @@ export class AuthenticationService {
     }
 
     return false;
-  }
-
-  getCurrentUserId() : string {
-    let data = localStorage.getItem('currentUser');
-    if(data !== null) {
-      return JSON.parse(data).userId;
-    }
-    return null;
   }
 
   /**
@@ -119,7 +119,13 @@ export class AuthenticationService {
           let tokenData = UtilityService.decodeToken(this.token);
 
           // store username and jwt token in local storage to keep user logged in between page refreshes
-          let userData = JSON.stringify({ username: tokenData.username, userId: tokenData.userId, token: token });
+          let userData = JSON.stringify(
+            {
+              username: tokenData.username,
+              userId: tokenData.userId,
+              token: token,
+              exp: Date.now() + tokenData.exp
+            });
           localStorage.setItem('currentUser', userData);
 
           return true;
