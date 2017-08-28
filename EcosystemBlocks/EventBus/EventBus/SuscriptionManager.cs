@@ -37,7 +37,9 @@ namespace EventBus
             _integrationEventsRespository = integrationEventsRespository;
         }
         
-        public string AddSubscription<T, TH>(Func<TH> handler) where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
+        public string AddSubscription<T, TH>(Func<TH> handler) 
+            where T : IntegrationEvent 
+            where TH : IIntegrationEventHandler<T>
         {
             var key = GetEventKey<T>();
             if (!HasSubscriptionForEvent<T>())
@@ -98,6 +100,10 @@ namespace EventBus
         // Process the integration events
         public void ProcessEvent(string typeName, IntegrationEventReceivedNotificationDto eventReceived)
         {
+            // No handlers registered
+            if (_handlers.Count == 0)
+                return;
+            
             var eventType = GetEventTypeByName(typeName);
             
             var sqsResponse = (SnsMessage)JsonConvert.DeserializeObject(eventReceived.Message.Body, typeof(SnsMessage));
