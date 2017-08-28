@@ -68,7 +68,7 @@ export class AuthenticationService {
       let tokenData = UtilityService.decodeToken(this.token);
 
       // If the token is going to expire in less of a day renew it
-      if(Date.now() + tokenData.exp < Date.now() + 86400) {
+      if(Date.now() + tokenData.exp > Date.now() - 86400) {
 
         this.tokenRenew().subscribe((result) => {
           if(!result) {
@@ -79,7 +79,7 @@ export class AuthenticationService {
 
         return true;
       }
-      else if(Date.now() + tokenData.exp <= Date.now()) {
+      else if(Date.now() + tokenData.exp >= Date.now()) {
         console.debug("Token expired");
         return false;
       }
