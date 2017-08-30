@@ -3,7 +3,7 @@ import {environment} from "../../environments/environment";
 
 /**
  * Manage dev/prod configuration.
- * overwrite the 'URL' placeholder with the correct backend url
+ * overwrite the 'URL' placeholder with the correct backend url after build
  */
 @Injectable()
 export class ServerConfigurationService {

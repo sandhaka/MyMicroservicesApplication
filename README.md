@@ -73,7 +73,7 @@ I using [MySQL](https://hub.docker.com/_/mysql/) to keep users informations runn
 
 dotnet-ef migrations to database versioning.
 
-To store basket and integration event instance and handlers processing status informations, I using the [redis server docker image](https://hub.docker.com/_/redis/).
+To store basket and integration event instance and handlers processing status informations, I using a [redis](https://hub.docker.com/_/redis/) server.
 
 #### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:

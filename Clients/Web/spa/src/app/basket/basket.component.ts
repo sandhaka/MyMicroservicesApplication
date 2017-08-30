@@ -29,7 +29,6 @@ export class BasketComponent implements OnInit {
     this.ordersService = ordersService;
     this.router = router;
     this.basket = new BasketData();
-
   }
 
   ngOnInit() {

@@ -33,21 +33,7 @@ export class AuthenticationService {
         // login successful if there's a jwt token in the response
         let token = response.json() && response.json().access_token;
         if (token) {
-          // set token property
-          this.token = token;
-
-          let tokenData = UtilityService.decodeToken(this.token);
-
-          // store username and jwt token in local storage to keep user logged in between page refreshes
-          let userData = JSON.stringify(
-            {
-              username: username,
-              userId: tokenData.userId,
-              token: token,
-              exp: Date.now() + tokenData.exp
-            });
-          localStorage.setItem('currentUser', userData);
-
+          this.storeToken(token);
           // return true to indicate successful login
           return true;
         } else {
@@ -113,25 +99,28 @@ export class AuthenticationService {
         let token = response.json() && response.json().access_token;
 
         if (token) {
-          // set token property
-          this.token = token;
-
-          let tokenData = UtilityService.decodeToken(this.token);
-
-          // store username and jwt token in local storage to keep user logged in between page refreshes
-          let userData = JSON.stringify(
-            {
-              username: tokenData.username,
-              userId: tokenData.userId,
-              token: token,
-              exp: Date.now() + tokenData.exp
-            });
-          localStorage.setItem('currentUser', userData);
-
+          this.storeToken(token);
           return true;
         }
 
         return false;
     });
+  }
+
+  private storeToken(token: string) {
+    this.token = token;
+
+    let tokenData = UtilityService.decodeToken(this.token);
+
+    // store username and jwt token in local storage to keep user logged in between page refreshes
+    let userData = JSON.stringify(
+      {
+        username: tokenData.username,
+        userId: tokenData.userId,
+        token: token,
+        exp: Date.now() + tokenData.exp
+      });
+
+    localStorage.setItem('currentUser', userData);
   }
 }

@@ -11,7 +11,6 @@ import {BasketService} from "../basket/basket.service";
   selector: 'orders',
   templateUrl: 'orders.component.html'
 })
-
 export class OrdersComponent implements OnInit {
 
   form: FormGroup;
