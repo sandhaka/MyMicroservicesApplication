@@ -9,6 +9,10 @@ using StackExchange.Redis;
 
 namespace IntegrationEventsContext
 {
+    /// <summary>
+    /// Event bus persistency layer
+    /// Give persistency to the integration events status
+    /// </summary>
     public class IntegrationEventsRespository : IIntegrationEventsRespository
     {
         private readonly ConnectionMultiplexer _connectionMultiplexer;

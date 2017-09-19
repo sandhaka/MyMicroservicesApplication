@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Basket.Application.Filters;
@@ -11,6 +15,7 @@ using EventBus;
 using EventBus.Abstractions;
 using EventBusAwsSns.Shared.IntegrationEvents;
 using IntegrationEventsContext;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +23,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 
 namespace Basket.Application
@@ -47,6 +53,42 @@ namespace Basket.Application
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials() );
+            });
+            
+            // Setup Token validation
+            var publicKey = new X509Certificate2("keys/saml.crt").GetRSAPublicKey();
+            
+            services.AddAuthentication().AddJwtBearer(options =>
+            {
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        // Add the access_token as a claim, as we may actually need it
+                        var accessToken = context.SecurityToken as JwtSecurityToken;
+                        if (accessToken != null)
+                        {
+                            ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
+                            if (identity != null)
+                            {
+                                identity.AddClaim(new Claim("access_token", accessToken.RawData));
+                            }
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new RsaSecurityKey(publicKey),
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration.GetSection("TokenAuthentication:Issuer").Value,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration.GetSection("TokenAuthentication:Audience").Value,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
             });
             
             // Add framework services.
@@ -100,8 +142,6 @@ namespace Basket.Application
             // Log actions
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ResponseLoggingMiddleware>();
-            
-            ConfigureAuth(app);
             
             app.UseMvc();
         }

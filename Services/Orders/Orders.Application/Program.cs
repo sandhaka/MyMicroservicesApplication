@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Net;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Orders.Application
@@ -7,15 +9,21 @@ namespace Orders.Application
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-                .UseKestrel(options => options.UseHttps("certificate/certificate.pfx", "password"))
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseUrls("https://*:443")
-                .UseStartup<Startup>()
-                .Build();
-
-            host.Run();
+            BuildWehHost(args).Run();
         }
+
+        private static IWebHost BuildWehHost(string[] args) => WebHost.CreateDefaultBuilder(args)
+            .UseKestrel(options =>
+            {
+                options.Listen(IPAddress.Loopback, 443, listenOptions =>
+                {
+                    listenOptions.UseHttps("certificate/certificate.pfx", "password");
+                });
+            })
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseIISIntegration()
+            .UseUrls("https://*:443")
+            .UseStartup<Startup>()
+            .Build();
     }
 }

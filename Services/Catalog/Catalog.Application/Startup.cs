@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Catalog.Application.Filters;
@@ -18,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 
 namespace Catalog.Application
@@ -65,6 +67,24 @@ namespace Catalog.Application
                         .AllowCredentials() );
             });
             
+            // Setup Token validation
+            var publicKey = new X509Certificate2("keys/saml.crt").GetRSAPublicKey();
+            
+            services.AddAuthentication().AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new RsaSecurityKey(publicKey),
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration.GetSection("TokenAuthentication:Issuer").Value,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration.GetSection("TokenAuthentication:Audience").Value,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+            
             // Add services
             services.AddMvc(options =>
             {
@@ -100,7 +120,7 @@ namespace Catalog.Application
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider services)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Trace);
@@ -117,11 +137,7 @@ namespace Catalog.Application
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ResponseLoggingMiddleware>();
 
-            ConfigureAuth(app);
-
             app.UseMvc();
-
-            new CatalogContextSeed().SeedAsync(app, loggerFactory).Wait();
         }
 
         private void ConfigureEventBus(IApplicationBuilder app)

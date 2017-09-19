@@ -2,6 +2,7 @@
 using AuthService.DbModels;
 using System;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using AuthService.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService
 {
@@ -59,6 +61,24 @@ namespace AuthService
                         .AllowAnyHeader()
                         .AllowCredentials() );
             });
+
+            // Setup Token validation
+            var publicKey = new X509Certificate2("keys/saml.crt").GetRSAPublicKey();
+            
+            services.AddAuthentication().AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new RsaSecurityKey(publicKey),
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration.GetSection("TokenAuthentication:Issuer").Value,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration.GetSection("TokenAuthentication:Audience").Value,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
             
             // Add framework services.
             services.AddMvc(opts =>
@@ -72,7 +92,7 @@ namespace AuthService
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider services)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Trace);
@@ -87,11 +107,9 @@ namespace AuthService
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ResponseLoggingMiddleware>();
             
-            ConfigureAuth(app);
+            ConfigureTokenProviderMiddleware(app, services);
             
             app.UseMvc();
-            
-            new UserDbContextSeed().SeedAsync(app, loggerFactory).Wait();
         }
     }
 }

@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.Application.DbModels;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 
 namespace Catalog.Application.Infrastructure
 {
     public class CatalogContextSeed
     {
-        public async Task SeedAsync(IApplicationBuilder applicationBuilder, ILoggerFactory loggerFactory, int retry = 0)
+        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory, int retry = 0)
         {
             var retryForAvailability = retry;
             try
             {
-                var context = (CatalogContext)applicationBuilder.ApplicationServices.GetService(typeof(CatalogContext));
+                var context = (CatalogContext)services.GetService(typeof(CatalogContext));
 
                 if (!context.Products.Any())
                 {
@@ -32,7 +31,7 @@ namespace Catalog.Application.Infrastructure
                 if (retryForAvailability < 10)
                 {
                     retryForAvailability++;
-                    await SeedAsync(applicationBuilder,loggerFactory, retryForAvailability);
+                    await SeedAsync(services, loggerFactory, retryForAvailability);
                 }
             }
         }

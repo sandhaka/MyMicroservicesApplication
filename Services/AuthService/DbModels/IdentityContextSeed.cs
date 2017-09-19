@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 
 namespace AuthService.DbModels
@@ -13,13 +12,13 @@ namespace AuthService.DbModels
     /// </summary>
     public class UserDbContextSeed
     {
-        public async Task SeedAsync(IApplicationBuilder applicationBuilder, ILoggerFactory loggerFactory, int retry = 0)
+        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory, int retry = 0)
         {
             var retryForAvailability = retry;
             try
             {
                 var context =
-                    (IdentityContext) applicationBuilder.ApplicationServices.GetService(typeof(IdentityContext));
+                    (IdentityContext) services.GetService(typeof(IdentityContext));
 
                 if (!context.ApplicationUsers.Any())
                 {
@@ -35,7 +34,7 @@ namespace AuthService.DbModels
                 if (retryForAvailability < 10)
                 {
                     retryForAvailability++;
-                    await SeedAsync(applicationBuilder,loggerFactory, retryForAvailability);
+                    await SeedAsync(services, loggerFactory, retryForAvailability);
                 }
             }
         }
