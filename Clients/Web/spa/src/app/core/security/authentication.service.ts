@@ -55,9 +55,11 @@ export class AuthenticationService {
    */
   tokenCheck() : boolean {
 
-    if(this.token) {
+    var storedToken = localStorage.getItem('currentUser');
 
-      let tokenData = JSON.parse(localStorage.getItem('currentUser'));
+    if(this.token && storedToken !== null) {
+
+      let tokenData = JSON.parse(storedToken);
 
       // If the token is going to expire in less of a day renew it
       if(tokenData.exp > Date.now() &&
