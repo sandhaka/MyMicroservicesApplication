@@ -10,7 +10,7 @@ Contains examples about Domain-Driven-Design, S.O.L.I.D. and CQRS patterns.
 
 ![alt text](http://turnoff.us/image/en/monolith-retirement.png)
 
-#### Requirements:
+##### Requirements:
 For each aspnet core service you may need to restore packages:
 ```sh
 $ dotnet restore
@@ -51,15 +51,7 @@ For Authorization, Orders and Catalog services you need to initialize the mySQL 
 dotnet ef database -v update
 ```
 
-To work with fluentd logging driver enable them in your docker daemon.json configuration file. Add the following field:
-```json
- {
-   "log-driver": "fluentd"
- }
-```
-Restart docker
-
-#### How to build and run the solution:
+##### How to build and run the solution:
 There are some script files into the "script" folder.
 
 To build:
@@ -72,17 +64,17 @@ To run:
 $ ./run.sh
 ```
 
-Or you can build each stage independently:
+Or you can build each docker stack independently:
 ```sh
 $ docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
 ```
 
 Navigate to http://your-docker-host-name-or-ip/
 
-#### See logs with Kibana:
+##### See logs with Kibana:
 Logs are available on Kibana at the url: http://<your-docker-host-name-or-ip>:5601
 
-#### Authentication:
+##### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).
 
 First, SPA retrieve from the authentication service an access token. It'll be expire in one week (7 days).
@@ -91,14 +83,14 @@ This strategy seems acceptable for a web application.
 
 Initial incpit from this [discussion](https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration/26834685#26834685).
 
-#### Databases:
+##### Databases:
 I using [MySQL](https://hub.docker.com/_/mysql/) to keep users informations running on the 'db' container with a mapping volume on the host machine.
 
 dotnet-ef migrations to database versioning.
 
 To store basket and integration event instance and handlers processing status informations, I using a [redis](https://hub.docker.com/_/redis/) server.
 
-#### Notes about the frontend:
+##### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:
 
 .1 Run the webpack-dev-server with a local backend services (ex. if you want to debug a service locally with the frontend as client). Configure the proxy with the desired redirects for the routes, for example I want to debug the login page using the authorization service run locally:
@@ -124,7 +116,7 @@ $ npm run start-docker
 
 Others options are the same from angular-cli [docs](https://github.com/angular/angular-cli)
 
-### How to debug a remote container:
+##### How to debug a remote container:
 For example, to debug the auth_service: look at the Dockerfile.debug version. I added the sshd support. Then you can attach remotely over a ssh tunnel with your ide. Notes the port mapping '2222:22' to avoid conflicts with the host's ssh server.
 
 Use the correct version of docker-compose file to overwrite the configurations, like:

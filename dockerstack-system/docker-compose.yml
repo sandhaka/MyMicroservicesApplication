@@ -7,24 +7,11 @@ services:
     ports:
       - "24224:24224"
       - "24224:24224/udp"
-    networks:
-      - mymicsapp
   elasticsearch:
     image: elasticsearch
-    expose:
-      - 9200
-    ports:
-      - "9200:9200"
-    networks:
-      - mymicsapp
   kibana:
     image: kibana
     links:
       - "elasticsearch"
-    networks:
-      - mymicsapp
     ports:
       - "5601:5601"
-
-networks:
-  mymicsapp:

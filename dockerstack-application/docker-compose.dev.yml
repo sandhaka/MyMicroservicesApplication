@@ -1,123 +1,14 @@
 version: '3.2'
 services:
     auth:
-        build: ./Services/AuthService
-        image: sandhaka/mymicsapp_auth
-        command: dotnet run --rm
-        ports:
-            - "5000:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.identityDb; Uid=sandhaka; Password=pwd"
             ASPNETCORE_ENVIRONMENT: "Development"
-        depends_on:
-            - mysql.data
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: auth
     orders:
-        build: ./Services/Orders/Orders.Application
-        image: "sandhaka/mymicsapp_orders"
-        command: dotnet run --rm
-        ports:
-            - "9000:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.ordersDb; Uid=sandhaka; Password=pwd"
-            REDIS_CONNECTION: "redis.data"
             ASPNETCORE_ENVIRONMENT: "Development"
-        depends_on:
-            - mysql.data
-            - redis.data
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: orders
     catalog:
-        build: ./Services/Catalog/Catalog.Application
-        image: "sandhaka/mymicsapp_catalog"
-        command: dotnet run --rm
-        ports:
-            - "9001:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.catalogDb; Uid=sandhaka; Password=pwd"
-            REDIS_CONNECTION: "redis.data"
             ASPNETCORE_ENVIRONMENT: "Development"
-        depends_on:
-            - mysql.data
-            - redis.data
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: catalog
     basket:
-        build: ./Services/Basket/Basket.Application
-        image: "sandhaka/mymicsapp_basket"
-        command: dotnet run --rm
-        ports:
-          - "9002:443"
         environment:
-            REDIS_CONNECTION: "redis.data"
             ASPNETCORE_ENVIRONMENT: "Development"
-        depends_on:
-          - redis.data
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: basket
-    mysql.data:
-        image: "mysql:latest"
-        environment:
-            - MYSQL_ROOT_PASSWORD=pwd
-            - MYSQL_USER=sandhaka
-            - MYSQL_PASSWORD=pwd
-        volumes:
-            - $HOME/data/mymicsapp_db:/var/lib/mysql
-        ports:
-            - "3306:3306"
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: mysql.data
-    redis.data:
-        image: "redis"
-        ports:
-            - "6379:6379"
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: redis.data
-    web.spa:
-        build: ./Clients/Web/spa
-        image: sandhaka/mymicsapp_webspa
-        ports:
-            - "443:443"
-        volumes:
-            - $HOME/mymicsapp/nginx-logs:/var/log/nginx
-        networks:
-            - mymicsapp
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: web.spa
-
-networks:
-  mymicsapp:
