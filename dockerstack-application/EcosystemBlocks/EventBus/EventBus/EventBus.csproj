@@ -3,18 +3,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AWSSDK.SQS" Version="3.3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
-    <PackageReference Include="NETStandard.Library" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
-      <HintPath>..\..\..\..\..\..\..\.nuget\packages\awssdk.sqs\3.3.2.7\lib\netstandard1.3\AWSSDK.SQS.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore, Version=1.1.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-      <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\1.1.2\lib\netstandard1.3\Microsoft.EntityFrameworkCore.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IntegrationEventsContext\IntegrationEventsContext\IntegrationEventsContext.csproj" />

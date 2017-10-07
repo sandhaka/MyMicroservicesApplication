@@ -3,41 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
-Project("{A396985C-425D-4FEA-BB1C-E2524FBA4CDE}") = "AuthService", "Services\AuthService\AuthService.csproj", "{32C9BC16-7C66-40AC-B908-688719FFF04F}"
+Project("{A396985C-425D-4FEA-BB1C-E2524FBA4CDE}") = "AuthService", "dockerstack-application\Services\AuthService\AuthService.csproj", "{32C9BC16-7C66-40AC-B908-688719FFF04F}"
 EndProject
-Project("{224F9C73-552E-4305-B83E-84C8C2C2E2CC}") = "Orders.Application", "Services\Orders\Orders.Application\Orders.Application.csproj", "{A9E7935C-7ADB-4315-AD59-AB072CEB0216}"
+Project("{224F9C73-552E-4305-B83E-84C8C2C2E2CC}") = "Orders.Application", "dockerstack-application\Services\Orders\Orders.Application\Orders.Application.csproj", "{A9E7935C-7ADB-4315-AD59-AB072CEB0216}"
 EndProject
-Project("{3DCADD6F-0704-4E4E-A95E-4DB496F924D3}") = "Orders.Domain", "Services\Orders\Orders.Domain\Orders.Domain.csproj", "{F5BC998E-4434-4ED6-A727-A3463F14D52B}"
+Project("{3DCADD6F-0704-4E4E-A95E-4DB496F924D3}") = "Orders.Domain", "dockerstack-application\Services\Orders\Orders.Domain\Orders.Domain.csproj", "{F5BC998E-4434-4ED6-A727-A3463F14D52B}"
 EndProject
-Project("{C0D17BBA-5E12-4F5B-B663-EDAF7DCF4B45}") = "Orders.Infrastructure", "Services\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj", "{6A74DD5C-7906-4616-B277-94163499A936}"
+Project("{C0D17BBA-5E12-4F5B-B663-EDAF7DCF4B45}") = "Orders.Infrastructure", "dockerstack-application\Services\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj", "{6A74DD5C-7906-4616-B277-94163499A936}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{36648EFB-9AE5-46F6-AD0F-92DA914CF338}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "dockerstack-application\EcosystemBlocks\EventBus\EventBus\EventBus.csproj", "{A04922E2-BBD8-47D9-BA55-C36CE5B15753}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orders", "Orders", "{47606D0A-5FE4-4E8C-B19B-CC59187FB700}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusAwsSns", "dockerstack-application\EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj", "{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EcosystemBlocks", "EcosystemBlocks", "{C4FBB18F-1F3D-4884-885B-D47725823358}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Application", "dockerstack-application\Services\Catalog\Catalog.Application\Catalog.Application.csproj", "{60F23254-E643-44B0-A765-8DCB199B0581}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{E8FD44A5-60E2-4B49-877D-7C49F7614C8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Application", "dockerstack-application\Services\Basket\Basket.Application\Basket.Application.csproj", "{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{F4352AF8-28D1-44E4-93DA-8248A0FC664D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EcosystemBlocks\EventBus\EventBus\EventBus.csproj", "{A04922E2-BBD8-47D9-BA55-C36CE5B15753}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusAwsSns", "EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj", "{98F4D1EE-1F33-46E6-A48F-DBD54D92868D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Application", "Services\Catalog\Catalog.Application\Catalog.Application.csproj", "{60F23254-E643-44B0-A765-8DCB199B0581}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{1240DE01-D7F1-484A-8F3E-34E08E2CA81B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{09497B35-0BDE-4847-B7A2-818EA68A9535}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{9CFEC32E-4DC6-4B28-93EC-4D60B5802A62}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Application", "Services\Basket\Basket.Application\Basket.Application.csproj", "{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationEventsContext", "IntegrationEventsContext", "{8254FD3F-8F9B-4EBF-9571-E685C1A609AF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEventsContext", "EcosystemBlocks\IntegrationEventsContext\IntegrationEventsContext\IntegrationEventsContext.csproj", "{DA892290-B0A9-44E9-83BB-F52D733FB2FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEventsContext", "dockerstack-application\EcosystemBlocks\IntegrationEventsContext\IntegrationEventsContext\IntegrationEventsContext.csproj", "{DA892290-B0A9-44E9-83BB-F52D733FB2FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,22 +66,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{32C9BC16-7C66-40AC-B908-688719FFF04F} = {36648EFB-9AE5-46F6-AD0F-92DA914CF338}
-		{47606D0A-5FE4-4E8C-B19B-CC59187FB700} = {36648EFB-9AE5-46F6-AD0F-92DA914CF338}
-		{A9E7935C-7ADB-4315-AD59-AB072CEB0216} = {47606D0A-5FE4-4E8C-B19B-CC59187FB700}
-		{F5BC998E-4434-4ED6-A727-A3463F14D52B} = {47606D0A-5FE4-4E8C-B19B-CC59187FB700}
-		{6A74DD5C-7906-4616-B277-94163499A936} = {47606D0A-5FE4-4E8C-B19B-CC59187FB700}
-		{E8FD44A5-60E2-4B49-877D-7C49F7614C8F} = {36648EFB-9AE5-46F6-AD0F-92DA914CF338}
-		{F4352AF8-28D1-44E4-93DA-8248A0FC664D} = {C4FBB18F-1F3D-4884-885B-D47725823358}
-		{A04922E2-BBD8-47D9-BA55-C36CE5B15753} = {F4352AF8-28D1-44E4-93DA-8248A0FC664D}
-		{98F4D1EE-1F33-46E6-A48F-DBD54D92868D} = {F4352AF8-28D1-44E4-93DA-8248A0FC664D}
-		{60F23254-E643-44B0-A765-8DCB199B0581} = {E8FD44A5-60E2-4B49-877D-7C49F7614C8F}
-		{09497B35-0BDE-4847-B7A2-818EA68A9535} = {1240DE01-D7F1-484A-8F3E-34E08E2CA81B}
-		{9CFEC32E-4DC6-4B28-93EC-4D60B5802A62} = {36648EFB-9AE5-46F6-AD0F-92DA914CF338}
-		{DFBD357B-AD4E-41C7-8647-D6809A5E0AF4} = {9CFEC32E-4DC6-4B28-93EC-4D60B5802A62}
-		{8254FD3F-8F9B-4EBF-9571-E685C1A609AF} = {C4FBB18F-1F3D-4884-885B-D47725823358}
-		{DA892290-B0A9-44E9-83BB-F52D733FB2FE} = {8254FD3F-8F9B-4EBF-9571-E685C1A609AF}
 	EndGlobalSection
 EndGlobal
