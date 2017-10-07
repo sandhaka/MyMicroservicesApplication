@@ -15,7 +15,7 @@ For each aspnet core service you may need to restore packages:
 ```sh
 $ dotnet restore
 ```
-And build the project:
+And build/publish the project:
 ```sh
 $ dotnet publish
 ```
@@ -26,38 +26,61 @@ openssl genrsa -des3 -out private.pem 2048
 ```sh
 openssl rsa -in private.pem -outform PEM -pubout -out public.pem
 ```
-See this [link](https://rietta.com/blog/2012/01/27/openssl-generating-rsa-key-from-command/)
 
-Place the private and public keys in the 'keys' folder into the services base folder.
+Place the private and public keys in the 'keys' folder of the services (All the *.Application and AuthService projects).
 The private key is needed only by the authorization service.
 
-And generate the HTTPS certificate:
+See this [link](https://rietta.com/blog/2012/01/27/openssl-generating-rsa-key-from-command/) for more info.
+
+Generate the HTTPS certificate for Kestrel:
 ```sh
 openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt
 ```
-See this [link](https://www.ssl.com/how-to/create-a-pfx-p12-certificate-file-using-openssl/)
+And put them into the "certificate" folder of the services (All the *.Application projects and AuthService projects).
+
+See this [link](https://www.ssl.com/how-to/create-a-pfx-p12-certificate-file-using-openssl/) for more info.
 
 Install this certificate in your dev computer.
 
-Setup AWS credentials into a file (MyMicroservicesApplication\Services\Orders\Orders.Application\aws.dev\credentials): [Guide](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html)
+Setup AWS credentials into a file \aws.dev\credentials for all the *.Application projects. 
+
+See the [AWS Docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html).
 
 For Authorization, Orders and Catalog services you need to initialize the mySQL schema. Use the dotnet utility for each service, type the following commands from the project folders:
 ```sh
 dotnet ef database -v update
 ```
 
-#### How to run the solution:
-```sh
-$ docker-compose -f docker-compose.dev.yml build
+To work with fluentd logging driver enable them in your docker daemon.json configuration file. Add the following field:
+```json
+ {
+   "log-driver": "fluentd"
+ }
 ```
+Restart docker
+
+#### How to build and run the solution:
+There are some script files into the "script" folder.
+
+To build:
 ```sh
-$ docker-compose -f docker-compose.dev.yml up
+$ ./build.sh
 ```
-or build run and detach
+
+To run:
 ```sh
-$ docker-compose -f docker-compose.dev.yml up --build -d
+$ ./run.sh
 ```
+
+Or you can build each stage independently:
+```sh
+$ docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
+```
+
 Navigate to http://your-docker-host-name-or-ip/
+
+#### See logs with Kibana:
+Logs are available on Kibana at the url: http://<your-docker-host-name-or-ip>:5601
 
 #### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).

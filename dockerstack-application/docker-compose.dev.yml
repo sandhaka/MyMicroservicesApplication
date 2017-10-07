@@ -11,6 +11,13 @@ services:
             ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
             - mysql.data
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: auth
     orders:
         build: ./Services/Orders/Orders.Application
         image: "sandhaka/mymicsapp_orders"
@@ -24,6 +31,13 @@ services:
         depends_on:
             - mysql.data
             - redis.data
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: orders
     catalog:
         build: ./Services/Catalog/Catalog.Application
         image: "sandhaka/mymicsapp_catalog"
@@ -37,6 +51,13 @@ services:
         depends_on:
             - mysql.data
             - redis.data
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: catalog
     basket:
         build: ./Services/Basket/Basket.Application
         image: "sandhaka/mymicsapp_basket"
@@ -48,6 +69,13 @@ services:
             ASPNETCORE_ENVIRONMENT: "Development"
         depends_on:
           - redis.data
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: basket
     mysql.data:
         image: "mysql:latest"
         environment:
@@ -58,10 +86,24 @@ services:
             - $HOME/data/mymicsapp_db:/var/lib/mysql
         ports:
             - "3306:3306"
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: mysql.data
     redis.data:
         image: "redis"
         ports:
-          - "6379:6379"
+            - "6379:6379"
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: redis.data
     web.spa:
         build: ./Clients/Web/spa
         image: sandhaka/mymicsapp_webspa
@@ -69,3 +111,13 @@ services:
             - "443:443"
         volumes:
             - $HOME/mymicsapp/nginx-logs:/var/log/nginx
+        networks:
+            - mymicsapp
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24224
+                tag: web.spa
+
+networks:
+  mymicsapp:
