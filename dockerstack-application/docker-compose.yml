@@ -7,9 +7,9 @@ services:
         ports:
             - "5000:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.identityDb; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.identityDb; User Id=sa; Password=Password&1"
         depends_on:
-            - mysql.data
+            - sql.data
     orders:
         build: ./Services/Orders/Orders.Application
         image: "sandhaka/mymicsapp_orders"
@@ -17,10 +17,10 @@ services:
         ports:
             - "9000:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.ordersDb; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.ordersDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis.data"
         depends_on:
-            - mysql.data
+            - sql.data
             - redis.data
     catalog:
         build: ./Services/Catalog/Catalog.Application
@@ -29,10 +29,10 @@ services:
         ports:
             - "9001:443"
         environment:
-            CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.catalogDb; Uid=sandhaka; Password=pwd"
+            CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.catalogDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis.data"
         depends_on:
-            - mysql.data
+            - sql.data
             - redis.data
     basket:
         build: ./Services/Basket/Basket.Application
@@ -44,16 +44,15 @@ services:
             REDIS_CONNECTION: "redis.data"
         depends_on:
           - redis.data
-    mysql.data:
-        image: "mysql:latest"
+    sql.data:
+        image: microsoft/mssql-server-linux
         environment:
-            - MYSQL_ROOT_PASSWORD=pwd
-            - MYSQL_USER=sandhaka
-            - MYSQL_PASSWORD=pwd
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password&1"
         volumes:
-            - $HOME/data/mymicsapp_db:/var/lib/mysql
+            - $HOME/data/mymicsapp_db:/var/opt/mssql
         ports:
-            - "3306:3306"
+            - "1433:1433"
     redis.data:
         image: "redis"
         ports:

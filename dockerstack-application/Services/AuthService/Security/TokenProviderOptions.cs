@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AuthService.DbModels;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService.Security
@@ -32,6 +33,6 @@ namespace AuthService.Security
         /// <summary>
         /// Resolves a user identity given a username and password.
         /// </summary>
-        public Func<string, string, Task<ClaimsIdentity>> IdentityResolver { get; set; }
+        public Func<IdentityContext, string, string, Task<ClaimsIdentity>> IdentityResolver { get; set; }
     }
 }

@@ -41,17 +41,18 @@ namespace AuthService
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Configuration.GetConnectionString("DefaultConnection");
             
-            services.AddDbContext<IdentityContext>(options =>
+            services.AddEntityFrameworkSqlServer().AddDbContext<IdentityContext>(options =>
             {
-                options.UseMySql(
+                options.UseSqlServer(
                     connectionString,
                     opts =>
                     {
                         opts.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                        opts.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                     });
             });
             
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             // Add cors and create Policy with options
             services.AddCors(options =>

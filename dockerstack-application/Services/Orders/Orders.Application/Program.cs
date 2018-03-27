@@ -1,7 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Orders.Infrastructure;
 
 namespace Orders.Application
 {
@@ -9,10 +13,28 @@ namespace Orders.Application
     {
         public static void Main(string[] args)
         {
-            BuildWehHost(args).Run();
+            var host = BuildWebHost(args);
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger("BuildWebHost");
+                
+                try
+                {
+                    new OrdersDbContextSeed().SeedAsync(services, loggerFactory).Wait();
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError(exception, "An error occurred seeding the DB.");
+                }
+            }
+            
+            host.Run();
         }
 
-        private static IWebHost BuildWehHost(string[] args) => WebHost.CreateDefaultBuilder(args)
+        private static IWebHost BuildWebHost(string[] args) => WebHost.CreateDefaultBuilder(args)
             .UseKestrel(options =>
             {
                 options.Listen(IPAddress.Any, 443, listenOptions =>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.Application.DbModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Catalog.Application.Infrastructure
@@ -15,6 +16,8 @@ namespace Catalog.Application.Infrastructure
             try
             {
                 var context = (CatalogContext)services.GetService(typeof(CatalogContext));
+
+                context.Database.Migrate();
 
                 if (!context.Products.Any())
                 {

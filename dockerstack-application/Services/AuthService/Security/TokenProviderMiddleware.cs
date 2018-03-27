@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AuthService.DbModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -23,24 +24,25 @@ namespace AuthService.Security
         /// <summary>
         /// Generate and return a new access token after user credentials verification
         /// </summary>
-        /// <param name="context">Http context</param>
+        /// <param name="httpContext">Http context</param>
+        /// <param name="context">Db context</param>
         /// <returns>Next task</returns>
         /// <exception cref="InvalidCastException"></exception>
-        protected override async Task GenerateTokenAsync(HttpContext context)
+        protected override async Task GenerateTokenAsync(HttpContext httpContext, IdentityContext context)
         {
-            var username = context.Request.Form["username"];
-            var password = context.Request.Form["password"];
+            var username = httpContext.Request.Form["username"];
+            var password = httpContext.Request.Form["password"];
 
             var opts = (Options as TokenProviderOptions);
             
             if(opts == null)
                 throw new InvalidCastException("TokenProviderOptions");
             
-            var identity = await opts.IdentityResolver(username, password);
+            var identity = await opts.IdentityResolver(context, username, password);
             if (identity == null)
             {
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("Invalid username or password.");
+                httpContext.Response.StatusCode = 400;
+                await httpContext.Response.WriteAsync("Invalid username or password.");
                 return;
             }
 
@@ -75,8 +77,8 @@ namespace AuthService.Security
             };
 
             // Serialize and return the response
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(response, SerializerSettings));
+            httpContext.Response.ContentType = "application/json";
+            await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(response, SerializerSettings));
         }
 
         /// <summary>

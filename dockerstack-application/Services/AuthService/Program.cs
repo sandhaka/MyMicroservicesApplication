@@ -5,6 +5,7 @@ using System.Net.Mime;
 using AuthService.DbModels;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -14,40 +15,32 @@ namespace AuthService
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
-
-            using (var scope = host.Services.CreateScope())
+            CreateWebHostBuilder(args).Build().MigrateDbContext<IdentityContext>((context, services) =>
             {
-                var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger("BuildWebHost");
-                
+
                 try
                 {
-                    new UserDbContextSeed().SeedAsync(services, loggerFactory).Wait();
+                    UserDbContextSeed.SeedAsync(context, loggerFactory).Wait();
                 }
                 catch (Exception exception)
                 {
-                    
                     logger.LogError(exception, "An error occurred seeding the DB.");
                 }
-            }
-            
-            host.Run();
+            }).Run();
         }
 
-        private static IWebHost BuildWebHost(string[] args) => WebHost.CreateDefaultBuilder(args)
-            .UseKestrel(options =>
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args) => 
+        WebHost.CreateDefaultBuilder(args)
+        .UseStartup<Startup>()
+        .UseContentRoot(Directory.GetCurrentDirectory())
+        .UseKestrel(options =>
+        {
+            options.Listen(IPAddress.Any, 443, listenOptions =>
             {
-                options.Listen(IPAddress.Any, 443, listenOptions =>
-                {
-                    listenOptions.UseHttps("certificate/dev.boltjwt.pfx", File.ReadAllText("certificate/dev.boltjwt.passphrase"));
-                });
-            })
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .UseIISIntegration()
-            .UseUrls("https://*:443")
-            .UseStartup<Startup>()
-            .Build();
+                listenOptions.UseHttps("certificate/dev.boltjwt.pfx", File.ReadAllText("certificate/dev.boltjwt.passphrase"));
+            });
+        });
     }
 }

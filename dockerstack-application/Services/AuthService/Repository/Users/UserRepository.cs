@@ -23,11 +23,11 @@ namespace AuthService.Repository.Users
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns>User claims</returns>
-        public async Task<ClaimsIdentity> GetIdentityAsync(string username, string password)
+        public static async Task<ClaimsIdentity> GetIdentityAsync(IdentityContext context, string username, string password)
         {
             ClaimsIdentity cIdentity = null;
             {
-                var user = await _identityContext.ApplicationUsers.FirstOrDefaultAsync(i => i.username == username);
+                var user = await context.ApplicationUsers.FirstOrDefaultAsync(i => i.username == username);
 
                 if (user != null)
                 {

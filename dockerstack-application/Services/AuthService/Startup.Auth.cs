@@ -26,7 +26,7 @@ namespace AuthService
                 Audience = Configuration.GetSection("TokenAuthentication:Audience").Value,
                 Issuer = Configuration.GetSection("TokenAuthentication:Issuer").Value,
                 SigningCredentials = new SigningCredentials(new RsaSecurityKey(privateKey), SecurityAlgorithms.RsaSha256),
-                IdentityResolver = userRepository.GetIdentityAsync
+                IdentityResolver = UserRepository.GetIdentityAsync
             };
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(tokenProviderOptions));
             

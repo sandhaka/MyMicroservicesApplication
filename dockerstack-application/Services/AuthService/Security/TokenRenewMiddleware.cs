@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthService.DbModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -24,8 +25,9 @@ namespace AuthService.Security
         /// token renew is valid only for a authenticated user
         /// </summary>
         /// <param name="context">Http context</param>
+        /// <param name="context">Db context</param>
         /// <returns>Next Task</returns>
-        public override Task Invoke(HttpContext context)
+        public override Task Invoke(HttpContext context, IdentityContext dbContext)
         {
             if (!context.Request.Path.Equals(Options.Path, StringComparison.Ordinal))
             {
@@ -39,7 +41,7 @@ namespace AuthService.Security
                 return context.Response.WriteAsync("Unauthorized.");
             }
                 
-            return GenerateTokenAsync(context);
+            return GenerateTokenAsync(context, dbContext);
         }
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace AuthService.Security
         /// </summary>
         /// <param name="httpContext">Http context</param>
         /// <returns>Next Task</returns>
-        protected override async Task GenerateTokenAsync(HttpContext httpContext)
+        protected override async Task GenerateTokenAsync(HttpContext httpContext, IdentityContext context)
         {
             // Retrieve the access token, skip 'Bearer ' string
             var encodedToken = httpContext.Request.Headers["Authorization"].ToString().Substring(7);
@@ -77,7 +79,7 @@ namespace AuthService.Security
             httpContext.Response.ContentType = "application/json";
             await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(response, SerializerSettings));
         }
-        
+
         /// <summary>
         /// Check the options content
         /// </summary>
