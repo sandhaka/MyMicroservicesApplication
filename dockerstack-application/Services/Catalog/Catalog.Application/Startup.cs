@@ -48,9 +48,9 @@ namespace Catalog.Application
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<CatalogContext>(options =>
+            services.AddEntityFrameworkSqlServer().AddDbContext<CatalogContext>(options =>
             {
-                options.UseMySql(
+                options.UseSqlServer(
                     connectionString,
                     opts =>
                     {

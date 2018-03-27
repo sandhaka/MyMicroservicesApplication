@@ -61,9 +61,9 @@ namespace Orders.Application
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Configuration.GetConnectionString("DefaultConnection");
             
-            services.AddDbContext<OrdersContext>(options =>
+            services.AddEntityFrameworkSqlServer().AddDbContext<OrdersContext>(options =>
             {
-                options.UseMySql(
+                options.UseSqlServer(
                     connectionString,
                     opts =>
                     {
