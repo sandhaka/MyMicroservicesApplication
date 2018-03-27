@@ -10,9 +10,8 @@ namespace Catalog.Application.Infrastructure
 {
     public class CatalogContextSeed
     {
-        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory, int retry = 0)
+        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory)
         {
-            var retryForAvailability = retry;
             try
             {
                 var context = (CatalogContext)services.GetService(typeof(CatalogContext));
@@ -21,21 +20,18 @@ namespace Catalog.Application.Infrastructure
 
                 if (!context.Products.Any())
                 {
-                    context.Products.AddRange(GetDefaultProducts());
+                    foreach(var product in GetDefaultProducts())
+                    {
+                        context.Products.Add(product);
+                    }
+
                     await context.SaveChangesAsync();
                 }
             }
             catch (Exception exception)
             {
-                var log = loggerFactory.CreateLogger("catalog seed");
-                
+                var log = loggerFactory.CreateLogger("catalog seed");                
                 log.LogError(exception.Message);
-                
-                if (retryForAvailability < 10)
-                {
-                    retryForAvailability++;
-                    await SeedAsync(services, loggerFactory, retryForAvailability);
-                }
             }
         }
 

@@ -21,10 +21,10 @@ namespace Catalog.Application.Infrastructure
         {
             productConfiguration.ToTable("products", DefaultSchema);
             productConfiguration.HasKey(cr => cr.Id);
-            productConfiguration.Property(cr => cr.ProductName).IsRequired();
-            productConfiguration.Property(cr => cr.UnitPrice).IsRequired();
-            productConfiguration.Property(cr => cr.Package).IsRequired();
-            productConfiguration.Property(cr => cr.Assets).IsRequired();
+            productConfiguration.Property<string>("ProductName").IsRequired();
+            productConfiguration.Property<decimal>("UnitPrice").IsRequired();
+            productConfiguration.Property<string>("Package").IsRequired();
+            productConfiguration.Property<int>("Assets").IsRequired();
         }
     }
 }

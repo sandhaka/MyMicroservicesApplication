@@ -60,7 +60,11 @@ namespace Basket.Application
             var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
             var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
             
-            services.AddAuthentication().AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
             {
                 options.Events = new JwtBearerEvents
                 {

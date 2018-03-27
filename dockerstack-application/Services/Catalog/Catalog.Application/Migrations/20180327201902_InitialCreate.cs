@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace Catalog.Application.Migrations
 {
@@ -17,7 +18,7 @@ namespace Catalog.Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGeneratedOnAdd", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Assets = table.Column<int>(nullable: false),
                     Package = table.Column<string>(nullable: false),
                     ProductName = table.Column<string>(nullable: false),
