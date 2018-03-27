@@ -10,11 +10,6 @@ services:
             CONNECTION_STRING: "Server=mysql.data; Port=3306; Database=mymicsapp.Services.identityDb; Uid=sandhaka; Password=pwd"
         depends_on:
             - mysql.data
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: auth
     orders:
         build: ./Services/Orders/Orders.Application
         image: "sandhaka/mymicsapp_orders"
@@ -27,11 +22,6 @@ services:
         depends_on:
             - mysql.data
             - redis.data
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: orders
     catalog:
         build: ./Services/Catalog/Catalog.Application
         image: "sandhaka/mymicsapp_catalog"
@@ -44,11 +34,6 @@ services:
         depends_on:
             - mysql.data
             - redis.data
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: catalog
     basket:
         build: ./Services/Basket/Basket.Application
         image: "sandhaka/mymicsapp_basket"
@@ -59,11 +44,6 @@ services:
             REDIS_CONNECTION: "redis.data"
         depends_on:
           - redis.data
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: basket
     mysql.data:
         image: "mysql:latest"
         environment:
@@ -74,20 +54,10 @@ services:
             - $HOME/data/mymicsapp_db:/var/lib/mysql
         ports:
             - "3306:3306"
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: mysql.data
     redis.data:
         image: "redis"
         ports:
             - "6379:6379"
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: redis.data
     web.spa:
         build: ./Clients/Web/spa
         image: sandhaka/mymicsapp_webspa
@@ -95,8 +65,3 @@ services:
             - "443:443"
         volumes:
             - $HOME/mymicsapp/nginx-logs:/var/log/nginx
-        logging:
-            driver: "fluentd"
-            options:
-                fluentd-address: localhost:24224
-                tag: web.spa

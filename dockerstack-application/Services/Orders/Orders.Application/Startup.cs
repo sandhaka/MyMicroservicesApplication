@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -67,6 +68,7 @@ namespace Orders.Application
                     opts =>
                     {
                         opts.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                        opts.EnableRetryOnFailure(10,TimeSpan.FromSeconds(30), null);
                     });
             });
             
@@ -81,7 +83,8 @@ namespace Orders.Application
             });
             
             // Setup Token validation
-            var publicKey = new X509Certificate2("keys/saml.crt").GetRSAPublicKey();
+            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
+            var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
             
             services.AddAuthentication().AddJwtBearer(options =>
             {
@@ -140,8 +143,8 @@ namespace Orders.Application
             services.AddTransient<IIntegrationEventsRespository, IntegrationEventsRespository>();
             services.AddTransient<IOrderingIntegrationEventService, OrderingIntegrationService>();
             services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<IBuyerRepository, BuyerRepository>();
-            services.AddTransient<IOrderRepository, OrderRepository>();    /* Orders respository */
+            services.AddScoped<IBuyerRepository, BuyerRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();    /* Orders respository */
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
             services.AddSingleton<IEventBus, EventBusAwsSns.EventBus>(); /* Adding EventBus as a singletone service */
            

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using AuthService.Repository.Users;
 using AuthService.Security;
@@ -15,7 +16,8 @@ namespace AuthService
         {
             var userRepository = services.GetRequiredService<IUserRepository>();
             
-            var privateKey = new X509Certificate2("keys/certificate.pfx").GetRSAPrivateKey();
+            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
+            var privateKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPrivateKey();
 
             // Setup Token provider
             var tokenProviderOptions = new TokenProviderOptions()

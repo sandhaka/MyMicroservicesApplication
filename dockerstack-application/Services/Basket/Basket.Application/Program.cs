@@ -15,9 +15,9 @@ namespace Basket.Application
         private static IWebHost BuildWehHost(string[] args) => WebHost.CreateDefaultBuilder(args)
             .UseKestrel(options =>
             {
-                options.Listen(IPAddress.Loopback, 443, listenOptions =>
+                options.Listen(IPAddress.Any, 443, listenOptions =>
                 {
-                    listenOptions.UseHttps("certificate/certificate.pfx", "password");
+                    listenOptions.UseHttps("certificate/dev.boltjwt.pfx", File.ReadAllText("certificate/dev.boltjwt.passphrase"));
                 });
             })
             .UseContentRoot(Directory.GetCurrentDirectory())

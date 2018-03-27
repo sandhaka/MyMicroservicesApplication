@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System.IO;
 
 namespace AuthService
 {
@@ -63,7 +64,8 @@ namespace AuthService
             });
 
             // Setup Token validation
-            var publicKey = new X509Certificate2("keys/saml.crt").GetRSAPublicKey();
+            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
+            var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
             
             services.AddAuthentication().AddJwtBearer(options =>
             {

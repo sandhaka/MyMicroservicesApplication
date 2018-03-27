@@ -1,8 +1,0 @@
-version: '3.2'
-services:
-    auth:
-        build: 
-          context: ./Services/AuthService
-          dockerfile: Dockerfile.debug
-        ports:
-            - "2222:22"

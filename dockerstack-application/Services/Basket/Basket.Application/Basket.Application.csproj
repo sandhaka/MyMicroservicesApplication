@@ -10,14 +10,14 @@
     <PackageReference Include="AWSSDK.IdentityManagement" Version="3.3.4.3" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.0.21" />
     <PackageReference Include="AWSSDK.SQS" Version="3.3.2.7" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.1" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.4" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj" />
@@ -26,12 +26,6 @@
   <ItemGroup>
     <Content Include="certificate\**\*.*">
       <Link>certificate\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="keys\**\*.*">
-      <Link>keys\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

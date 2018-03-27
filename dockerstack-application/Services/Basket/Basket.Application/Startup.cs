@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -56,7 +57,8 @@ namespace Basket.Application
             });
             
             // Setup Token validation
-            var publicKey = new X509Certificate2("keys/saml.crt").GetRSAPublicKey();
+            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
+            var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
             
             services.AddAuthentication().AddJwtBearer(options =>
             {

@@ -1,8 +1,8 @@
-FROM microsoft/aspnetcore:1.1
+FROM microsoft/aspnetcore:2.0.3
 
 # Copy application files
 WORKDIR /app
-COPY bin/Debug/netcoreapp1.1/publish /app
+COPY bin/Debug/netcoreapp2.0/publish /app
 
 EXPOSE 443
 
