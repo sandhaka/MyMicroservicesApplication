@@ -131,7 +131,9 @@ namespace Catalog.Application
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Trace);
-                        
+
+            app.UseAuthentication();                  
+
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);

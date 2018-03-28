@@ -8,9 +8,8 @@ namespace Orders.Infrastructure
 {
     public class OrdersDbContextSeed
     {
-        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory, int retry = 0)
+        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory)
         {
-            var retryForAvailability = retry;
             try
             {
                 var context =
@@ -22,12 +21,6 @@ namespace Orders.Infrastructure
             {
                 var log = loggerFactory.CreateLogger("orders seed");
                 log.LogError(exception.Message);
-                
-                if (retryForAvailability < 10)
-                {
-                    retryForAvailability++;
-                    await SeedAsync(services, loggerFactory, retryForAvailability);
-                }
             }
         }
     }

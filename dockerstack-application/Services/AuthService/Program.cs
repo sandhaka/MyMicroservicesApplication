@@ -15,7 +15,7 @@ namespace AuthService
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().MigrateDbContext<IdentityContext>((context, services) =>
+            BuildWebHost(args).MigrateDbContext<IdentityContext>((context, services) =>
             {
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger("BuildWebHost");
@@ -31,7 +31,7 @@ namespace AuthService
             }).Run();
         }
 
-        private static IWebHostBuilder CreateWebHostBuilder(string[] args) => 
+        public static IWebHost BuildWebHost(string[] args) => 
         WebHost.CreateDefaultBuilder(args)
         .UseStartup<Startup>()
         .UseContentRoot(Directory.GetCurrentDirectory())
@@ -41,6 +41,6 @@ namespace AuthService
             {
                 listenOptions.UseHttps("certificate/dev.boltjwt.pfx", File.ReadAllText("certificate/dev.boltjwt.passphrase"));
             });
-        });
+        }).Build();
     }
 }

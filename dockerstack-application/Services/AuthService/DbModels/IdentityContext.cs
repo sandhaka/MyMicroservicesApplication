@@ -23,8 +23,10 @@ namespace AuthService.DbModels
         {
             appUserConfiguration.ToTable("applicationusers", DefaultSchema);
             appUserConfiguration.HasKey(cr => cr.id);
-            appUserConfiguration.Property(cr => cr.username).IsRequired();
-            appUserConfiguration.Property(cr => cr.password).IsRequired();         
+            appUserConfiguration.Property<string>("username").IsRequired();
+            appUserConfiguration.Property<string>("password").IsRequired();         
+            appUserConfiguration.Property<string>("name_full");         
+            appUserConfiguration.Property<int>("level");         
         }
     }
 }

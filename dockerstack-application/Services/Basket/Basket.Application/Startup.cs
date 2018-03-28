@@ -137,6 +137,8 @@ namespace Basket.Application
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseAuthentication();
+
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
