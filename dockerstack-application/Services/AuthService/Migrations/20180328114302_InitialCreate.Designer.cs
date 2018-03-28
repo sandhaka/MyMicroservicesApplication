@@ -11,7 +11,7 @@ using System;
 namespace AuthService.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20180328061212_InitialCreate")]
+    [Migration("20180328114302_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

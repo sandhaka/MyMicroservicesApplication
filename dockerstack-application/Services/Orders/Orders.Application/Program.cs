@@ -23,7 +23,7 @@ namespace Orders.Application
                 
                 try
                 {
-                    new OrdersDbContextSeed().SeedAsync(services, loggerFactory).Wait();
+                    new OrdersDbContextSeed().Seed(services, loggerFactory);
                 }
                 catch (Exception exception)
                 {

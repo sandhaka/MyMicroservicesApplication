@@ -8,7 +8,7 @@ namespace Orders.Infrastructure
 {
     public class OrdersDbContextSeed
     {
-        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory)
+        public void Seed(IServiceProvider services, ILoggerFactory loggerFactory)
         {
             try
             {

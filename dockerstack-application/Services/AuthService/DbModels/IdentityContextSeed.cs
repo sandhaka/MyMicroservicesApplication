@@ -11,16 +11,14 @@ namespace AuthService.DbModels
     /// <summary>
     /// Init database with default values
     /// </summary>
-    public static class UserDbContextSeed
+    public class UserDbContextSeed
     {
-        public static async Task SeedAsync(IdentityContext context, ILoggerFactory loggerFactory)
+        public async Task SeedAsync(IdentityContext context, ILoggerFactory loggerFactory)
         {
             try
             {
                 using(context)
                 {
-                    context.Database.Migrate();
-
                     if (!context.ApplicationUsers.Any())
                     {
                         context.ApplicationUsers.AddRange(GetDefaultsUser());
@@ -35,7 +33,7 @@ namespace AuthService.DbModels
             }
         }
 
-        private static AppUser GetDefaultsUser()
+        private AppUser GetDefaultsUser()
         {
             var md5Hascher = MD5.Create();
             var passwordHash = md5Hascher.ComputeHash(Encoding.UTF8.GetBytes("admin"));

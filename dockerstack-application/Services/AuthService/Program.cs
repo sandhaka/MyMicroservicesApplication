@@ -22,7 +22,7 @@ namespace AuthService
 
                 try
                 {
-                    UserDbContextSeed.SeedAsync(context, loggerFactory).Wait();
+                    new UserDbContextSeed().SeedAsync(context, loggerFactory).Wait();
                 }
                 catch (Exception exception)
                 {
