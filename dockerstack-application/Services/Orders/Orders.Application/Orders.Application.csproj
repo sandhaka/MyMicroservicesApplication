@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj" />
     <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\..\EcosystemBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj" />
     <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
     <ProjectReference Include="..\Orders.Infrastructure\Orders.Infrastructure.csproj" />
   </ItemGroup>

@@ -1,25 +1,22 @@
 using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Orders.Infrastructure;
 
 namespace Orders.Infrastructure
 {
     public class OrdersDbContextSeed
     {
-        public void Seed(IServiceProvider services, ILoggerFactory loggerFactory)
+        public void Seed(OrdersContext context, ILoggerFactory loggerFactory)
         {
             try
             {
-                var context =
-                    (OrdersContext) services.GetService(typeof(OrdersContext));
-
-                context.Database.Migrate();
+                using (context)
+                {
+                    // Nothing to initialize
+                }
             }
             catch (Exception exception)
             {
-                var log = loggerFactory.CreateLogger("orders seed");
+                var log = loggerFactory.CreateLogger("Orders seed");
                 log.LogError(exception.Message);
             }
         }

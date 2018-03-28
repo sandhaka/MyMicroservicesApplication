@@ -109,7 +109,7 @@ namespace Basket.Application
             if (string.IsNullOrEmpty(redisConnectionString))
                 redisConnectionString = Configuration.GetConnectionString("Redis");
             
-            services.AddSingleton<ConnectionMultiplexer>(sp =>
+            services.AddSingleton(sp =>
             {
                 var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
                 return ConnectionMultiplexer.Connect(ips.First().ToString());

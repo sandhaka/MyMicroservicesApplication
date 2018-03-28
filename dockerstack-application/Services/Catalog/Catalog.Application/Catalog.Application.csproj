@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBusAwsSns\EventBusAwsSns.csproj" />
     <ProjectReference Include="..\..\..\EcosystemBlocks\EventBus\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\..\EcosystemBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.2" />

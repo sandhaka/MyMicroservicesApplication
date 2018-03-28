@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Application", "docke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEventsContext", "dockerstack-application\EcosystemBlocks\IntegrationEventsContext\IntegrationEventsContext\IntegrationEventsContext.csproj", "{DA892290-B0A9-44E9-83BB-F52D733FB2FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHost.Customization", "dockerstack-application\EcosystemBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj", "{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA892290-B0A9-44E9-83BB-F52D733FB2FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

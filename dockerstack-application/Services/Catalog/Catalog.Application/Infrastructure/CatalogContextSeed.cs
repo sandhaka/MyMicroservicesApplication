@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.Application.DbModels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Catalog.Application.Infrastructure
 {
     public class CatalogContextSeed
     {
-        public async Task SeedAsync(IServiceProvider services, ILoggerFactory loggerFactory)
+        public async Task SeedAsync(CatalogContext context, ILoggerFactory loggerFactory)
         {
             try
             {
-                var context = (CatalogContext)services.GetService(typeof(CatalogContext));
-
-                context.Database.Migrate();
-
-                if (!context.Products.Any())
+                using (context)
                 {
-                    foreach(var product in GetDefaultProducts())
+                    if (!context.Products.Any())
                     {
-                        context.Products.Add(product);
-                    }
+                        foreach (var product in GetDefaultProducts())
+                        {
+                            context.Products.Add(product);
+                        }
 
-                    await context.SaveChangesAsync();
+                        await context.SaveChangesAsync();
+                    }
                 }
             }
             catch (Exception exception)

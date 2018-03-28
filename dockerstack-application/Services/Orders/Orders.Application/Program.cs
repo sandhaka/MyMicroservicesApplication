@@ -13,14 +13,11 @@ namespace Orders.Application
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
-
-            using (var scope = host.Services.CreateScope())
+            BuildWebHost(args).MigrateDbContext<OrdersContext>((context, services) =>
             {
-                var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger("BuildWebHost");
-                
+
                 try
                 {
                     new OrdersDbContextSeed().Seed(services, loggerFactory);
@@ -29,12 +26,11 @@ namespace Orders.Application
                 {
                     logger.LogError(exception, "An error occurred seeding the DB.");
                 }
-            }
-            
-            host.Run();
+            }).Run();
         }
 
-        private static IWebHost BuildWebHost(string[] args) => WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
             .UseKestrel(options =>
             {
                 options.Listen(IPAddress.Any, 443, listenOptions =>
