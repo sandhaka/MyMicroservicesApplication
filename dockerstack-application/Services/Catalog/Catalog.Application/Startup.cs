@@ -95,18 +95,6 @@ namespace Catalog.Application
                 options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
             });
             
-            // Take Redis connection string from environment varible by default
-            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
-            // Otherwise take from the local configuration
-            if (string.IsNullOrEmpty(redisConnectionString))
-                redisConnectionString = Configuration.GetConnectionString("Redis");
-            
-//            services.AddSingleton(sp =>
-//            {
-//                var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
-//                return ConnectionMultiplexer.Connect(ips.First().ToString());
-//            });
-            
             services.AddTransient<IIntegrationEventsRespository, IntegrationEventsRespository>();
             services.AddTransient<ICatalogRepository, CatalogRepository>(); /* Catalog repository */
             services.AddTransient<ISubscriptionsManager, SuscriptionManager>(); /* Subscription manager used by the EventBus */
