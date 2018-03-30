@@ -20,7 +20,7 @@ namespace Orders.Application
 
                 try
                 {
-                    new OrdersDbContextSeed().Seed(services, loggerFactory);
+                    new OrdersDbContextSeed().Seed(context, loggerFactory);
                 }
                 catch (Exception exception)
                 {
