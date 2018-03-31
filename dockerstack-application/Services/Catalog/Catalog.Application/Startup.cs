@@ -56,17 +56,8 @@ namespace Catalog.Application
                     opts =>
                     {
                         opts.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                        opts.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);                        
                     });
-            });
-            
-            // Add cors and create Policy with options
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials() );
             });
             
             // Setup Token validation
@@ -96,6 +87,16 @@ namespace Catalog.Application
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
+            });
+
+            // Add cors and create Policy with options
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials() );
             });
 
                         // Take Redis connection string from environment varible by default
@@ -132,13 +133,13 @@ namespace Catalog.Application
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Trace);
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();                  
 
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
-            
-            app.UseCors("CorsPolicy");
             
             ConfigureEventBus(app);
 

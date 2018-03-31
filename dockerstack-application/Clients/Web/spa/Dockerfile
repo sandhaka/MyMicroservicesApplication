@@ -15,15 +15,14 @@ RUN npm install \
   && ng build --aot --prod \
   && rm -rf /usr/share/nginx/html/* \
   && mv ./dist/* /usr/share/nginx/html/ \
-  && npm cache clean \
   && apk del nodejs libstdc++ libgcc libuv http-parser ca-certificates \
   && rm -rf ./*
 
 # Edit the backend urls as you like to debugging purpose
-RUN /bin/sed -i 's|CATALOG_URL|https://192.168.104.102:9001|' /usr/share/nginx/html/main* \
-  && /bin/sed -i 's|AUTH_URL|https://192.168.104.102:5000|' /usr/share/nginx/html/main* \
-  && /bin/sed -i 's|ORDERS_URL|https://192.168.104.102:9000|' /usr/share/nginx/html/main* \
-  && /bin/sed -i 's|BASKET_URL|https://192.168.104.102:9002|' /usr/share/nginx/html/main*
+RUN /bin/sed -i 's|CATALOG_URL|https://192.168.104.101:9001|' /usr/share/nginx/html/main* \
+  && /bin/sed -i 's|AUTH_URL|https://192.168.104.101:5000|' /usr/share/nginx/html/main* \
+  && /bin/sed -i 's|ORDERS_URL|https://192.168.104.101:9000|' /usr/share/nginx/html/main* \
+  && /bin/sed -i 's|BASKET_URL|https://192.168.104.101:9002|' /usr/share/nginx/html/main*
 
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -55,16 +55,6 @@ namespace AuthService
             
             services.AddScoped<IUserRepository, UserRepository>();
 
-            // Add cors and create Policy with options
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials() );
-            });
-
             // Setup Token validation
             var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
             var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
@@ -93,6 +83,16 @@ namespace AuthService
             {
                 // TODO
             });
+
+            // Add cors and create Policy with options
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials() );
+            });
             
             // Add https features
             services.Configure<MvcOptions>(options =>
@@ -105,11 +105,11 @@ namespace AuthService
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug(LogLevel.Trace);
             
+            app.UseCors("CorsPolicy");
+
             var options = new RewriteOptions()
                 .AddRedirectToHttps();
             app.UseRewriter(options);
-            
-            app.UseCors("CorsPolicy");
             
             // Log actions
             app.UseMiddleware<RequestLoggingMiddleware>();
