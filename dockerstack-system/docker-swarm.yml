@@ -1,0 +1,32 @@
+version: '3.2'
+services:
+  fluentd:
+    build: ./fluentd
+    links:
+      - "elasticsearch"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - mymsc_network          
+    deploy:
+        replicas: 1            
+  elasticsearch:
+    image: elasticsearch
+    ports:
+      - "9200:9200"
+    networks:
+      - mymsc_network        
+    deploy:
+        replicas: 1            
+  kibana: 
+    image: kibana
+    networks:
+      - mymsc_network
+    ports:
+      - "5601:5601"
+    deploy:
+        replicas: 1      
+      
+networks: 
+    mymsc_network:      
