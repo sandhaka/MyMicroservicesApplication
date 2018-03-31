@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
@@ -31,6 +33,7 @@ using Orders.Domain.AggregatesModel.BuyerAggregate;
 using Orders.Domain.AggregatesModel.OrderAggregate;
 using Orders.Infrastructure;
 using Orders.Infrastructure.Repositories;
+using StackExchange.Redis;
 
 namespace Orders.Application
 {
@@ -126,6 +129,18 @@ namespace Orders.Application
                 options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
             })
                 .AddFluentValidation(); /* Using Fluent validation */
+
+            // Take Redis connection string from environment varible by default
+            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
+            // Otherwise take from the local configuration
+            if (string.IsNullOrEmpty(redisConnectionString))
+                redisConnectionString = Configuration.GetConnectionString("Redis");
+            
+            services.AddSingleton(sp =>
+            {
+                var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
+                return ConnectionMultiplexer.Connect(ips.First().ToString());
+            });
 
             // Adding services to DI container
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

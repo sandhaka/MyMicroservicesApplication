@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using Amazon.SimpleNotificationService;
@@ -20,6 +22,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 
 namespace Catalog.Application
 {
@@ -93,6 +96,18 @@ namespace Catalog.Application
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(HttpGlobalExceptionHandlingFilter));
+            });
+
+                        // Take Redis connection string from environment varible by default
+            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
+            // Otherwise take from the local configuration
+            if (string.IsNullOrEmpty(redisConnectionString))
+                redisConnectionString = Configuration.GetConnectionString("Redis");
+            
+            services.AddSingleton(sp =>
+            {
+                var ips = Dns.GetHostAddressesAsync(redisConnectionString).Result;
+                return ConnectionMultiplexer.Connect(ips.First().ToString());
             });
             
             services.AddTransient<IIntegrationEventsRespository, IntegrationEventsRespository>();
