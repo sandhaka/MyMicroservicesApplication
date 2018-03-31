@@ -12,7 +12,7 @@ services:
             - sql.data
     orders:
         build: ./Services/Orders/Orders.Application
-        image: "sandhaka/mymicsapp_orders"
+        image: sandhaka/mymicsapp_orders
         command: dotnet run --rm
         ports:
             - "9000:443"
@@ -24,7 +24,7 @@ services:
             - redis.data
     catalog:
         build: ./Services/Catalog/Catalog.Application
-        image: "sandhaka/mymicsapp_catalog"
+        image: sandhaka/mymicsapp_catalog
         command: dotnet run --rm
         ports:
             - "9001:443"
@@ -36,7 +36,7 @@ services:
             - redis.data
     basket:
         build: ./Services/Basket/Basket.Application
-        image: "sandhaka/mymicsapp_basket"
+        image: sandhaka/mymicsapp_basket
         command: dotnet run --rm
         ports:
           - "9002:443"

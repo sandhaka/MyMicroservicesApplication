@@ -1,0 +1,118 @@
+version: '3.2'
+services:
+    auth:
+        image: sandhaka/mymicsapp_auth
+        command: dotnet run --rm
+        ports:
+            - "5000:443"
+        environment:
+            ASPNETCORE_ENVIRONMENT: "Production"          
+            CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.identityDb; User Id=sa; Password=Password&1"
+        networks:
+          - mymsc_network    
+        deploy:
+          replicas: 1        
+        logging:
+            driver: "fluentd"
+            options:
+                tag: auth                    
+    orders:
+        image: sandhaka/mymicsapp_orders
+        command: dotnet run --rm
+        ports:
+            - "9000:443"
+        environment:
+            ASPNETCORE_ENVIRONMENT: "Production"          
+            CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.ordersDb; User Id=sa; Password=Password&1"
+            REDIS_CONNECTION: "redis_data"
+        networks:
+          - mymsc_network   
+        deploy:
+          replicas: 1  
+        logging:
+            driver: "fluentd"
+            options:
+                tag: orders                               
+    catalog:
+        image: sandhaka/mymicsapp_catalog
+        command: dotnet run --rm
+        ports:
+            - "9001:443"
+        environment:
+            ASPNETCORE_ENVIRONMENT: "Production"          
+            CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.catalogDb; User Id=sa; Password=Password&1"
+            REDIS_CONNECTION: "redis_data"
+        networks:
+          - mymsc_network   
+        deploy:
+          replicas: 1   
+        logging:
+            driver: "fluentd"
+            options:
+                tag: catalog                               
+    basket:
+        image: sandhaka/mymicsapp_basket
+        command: dotnet run --rm
+        ports:
+          - "9002:443"
+        environment:
+            ASPNETCORE_ENVIRONMENT: "Production"          
+            REDIS_CONNECTION: "redis_data"
+        networks:
+          - mymsc_network   
+        deploy:
+          replicas: 1   
+        logging:
+            driver: "fluentd"
+            options:
+                tag: basket                            
+    sql_data:
+        image: microsoft/mssql-server-linux
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password&1"
+        volumes:
+            - sql_data.vol:/var/opt/mssql
+        ports:
+            - "1433:1433"
+        networks:
+          - mymsc_network      
+        deploy:
+          replicas: 1    
+        logging:
+            driver: "fluentd"
+            options:
+                tag: sql.data                           
+    redis_data:
+        image: "redis"
+        ports:
+            - "6379:6379"
+        networks:
+          - mymsc_network               
+        deploy:
+          replicas: 1     
+        logging:
+            driver: "fluentd"
+            options:
+                tag: redis.data           
+    web_spa:
+        image: sandhaka/mymicsapp_webspa
+        ports:
+            - "443:443"
+        volumes:
+            - nginx.logs.vol:/var/log/nginx
+        networks:
+          - mymsc_network   
+        deploy:
+          replicas: 1
+        logging:
+            driver: "fluentd"
+            options:
+                tag: web.spa          
+
+volumes:
+    sql_data.vol:
+    nginx.logs.vol:
+
+networks: 
+    mymsc_network:

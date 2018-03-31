@@ -1,7 +1,5 @@
 ASP.NET Core / Docker / SPA - Microservices oriented application example
 ---
--- *Work in progress* --
----
 
 ### Intro 
 This project contains several implementation examples of habitual patterns to build a microservices oriented application with asp.NET core, Docker and Angular.
@@ -46,33 +44,12 @@ Setup AWS credentials into a file \aws.dev\credentials for all the *.Application
 
 See the [AWS Docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html).
 
-For Authorization, Orders and Catalog services you need to initialize the mySQL schema. Use the dotnet utility for each service, type the following commands from the project folders:
-```sh
-dotnet ef database -v update
-```
-
 ##### How to build and run the solution:
-There are some script files into the "script" folder.
-
-To build:
-```sh
-$ ./build.sh
-```
-
-To run:
-```sh
-$ ./run.sh
-```
-
-Or you can build each docker stack independently:
 ```sh
 $ docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
 ```
 
 Navigate to http://your-docker-host-name-or-ip/
-
-##### See logs with Kibana:
-Logs are available on Kibana at the url: http://<your-docker-host-name-or-ip>:5601
 
 ##### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).
@@ -84,7 +61,7 @@ This strategy seems acceptable for a web application.
 Initial incpit from this [discussion](https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration/26834685#26834685).
 
 ##### Databases:
-I using [MySQL](https://hub.docker.com/_/mysql/) to keep users informations running on the 'db' container with a mapping volume on the host machine.
+I using Ms SQL to keep users informations running on the 'db' container with a mapping volume on the host machine.
 
 dotnet-ef migrations to database versioning.
 
