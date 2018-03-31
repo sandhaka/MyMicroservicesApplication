@@ -2,17 +2,17 @@ version: '3.2'
 services:
     auth:
         build: ./Services/AuthService
-        image: sandhaka/mymicsapp_auth
+        image: localhost:5000/sandhaka/mymicsapp_auth
         command: dotnet run --rm
         ports:
-            - "5000:443"
+            - "5005:443"
         environment:
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.identityDb; User Id=sa; Password=Password&1"
         depends_on:
             - sql.data
     orders:
         build: ./Services/Orders/Orders.Application
-        image: sandhaka/mymicsapp_orders
+        image: localhost:5000/sandhaka/mymicsapp_orders
         command: dotnet run --rm
         ports:
             - "9000:443"
@@ -24,7 +24,7 @@ services:
             - redis.data
     catalog:
         build: ./Services/Catalog/Catalog.Application
-        image: sandhaka/mymicsapp_catalog
+        image: localhost:5000/sandhaka/mymicsapp_catalog
         command: dotnet run --rm
         ports:
             - "9001:443"
@@ -36,7 +36,7 @@ services:
             - redis.data
     basket:
         build: ./Services/Basket/Basket.Application
-        image: sandhaka/mymicsapp_basket
+        image: localhost:5000/sandhaka/mymicsapp_basket
         command: dotnet run --rm
         ports:
           - "9002:443"
@@ -54,12 +54,12 @@ services:
         ports:
             - "1433:1433"
     redis.data:
-        image: "redis"
+        image: redis
         ports:
             - "6379:6379"
-    web.spa:
+    web_spa:
         build: ./Clients/Web/spa
-        image: sandhaka/mymicsapp_webspa
+        image: localhost:5000/sandhaka/mymicsapp_webspa
         ports:
             - "443:443"
         volumes:

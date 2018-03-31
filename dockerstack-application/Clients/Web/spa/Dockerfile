@@ -20,7 +20,7 @@ RUN npm install \
 
 # Edit the backend urls as you like to debugging purpose
 RUN /bin/sed -i 's|CATALOG_URL|https://192.168.104.101:9001|' /usr/share/nginx/html/main* \
-  && /bin/sed -i 's|AUTH_URL|https://192.168.104.101:5000|' /usr/share/nginx/html/main* \
+  && /bin/sed -i 's|AUTH_URL|https://192.168.104.101:5005|' /usr/share/nginx/html/main* \
   && /bin/sed -i 's|ORDERS_URL|https://192.168.104.101:9000|' /usr/share/nginx/html/main* \
   && /bin/sed -i 's|BASKET_URL|https://192.168.104.101:9002|' /usr/share/nginx/html/main*
 
