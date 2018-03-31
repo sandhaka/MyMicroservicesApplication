@@ -45,8 +45,18 @@ Setup AWS credentials into a file \aws.dev\credentials for all the *.Application
 See the [AWS Docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html).
 
 ##### How to build and run the solution:
+Using compose:
 ```sh
 $ docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
+```
+Using Docker swarm:
+>Warning: I'm using a local registry to manage the images, create your own registry and bind it to :5000 to work with the docker-stack files or edit the stack configuration
+Deploy all services to a docker swarm with a logs analyzer stack (Deploy the system stack first):
+```sh
+$ docker stack deploy -c dockerstack-system/docker-stack.yml
+```
+```sh
+$ docker stack deploy -c dockerstack-application/docker-stack.yml
 ```
 
 Navigate to http://your-docker-host-name-or-ip/
