@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationEventsContext", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHost.Customization", "dockerstack-application\EcosystemBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj", "{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Gateway", "dockerstack-application\Services\Gateway\Api.Gateway\Api.Gateway.csproj", "{5B3F093B-BD62-4B48-93EA-4FC1D41FAFA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E16B763-4F68-4E24-A14E-F3DDA3C6661D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B3F093B-BD62-4B48-93EA-4FC1D41FAFA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B3F093B-BD62-4B48-93EA-4FC1D41FAFA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B3F093B-BD62-4B48-93EA-4FC1D41FAFA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B3F093B-BD62-4B48-93EA-4FC1D41FAFA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -51,6 +51,7 @@ $ docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
 ```
 Using Docker swarm:
 >Warning: I'm using a local registry to manage the images, create your own registry and bind it to :5000 to work with the docker-stack files or edit the stack configuration
+
 Deploy all services to a docker swarm with a logs analyzer stack (Deploy the system stack first):
 ```sh
 $ docker stack deploy -c dockerstack-system/docker-stack.yml
