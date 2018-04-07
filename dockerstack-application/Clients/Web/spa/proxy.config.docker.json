@@ -18,7 +18,7 @@
     "logLevel": "debug"
   },
   "/api/orders/*": {
-    "target": "https://192.168.104.100:9000",
+    "target": "https://192.168.104.103:3000",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

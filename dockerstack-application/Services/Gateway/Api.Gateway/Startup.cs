@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 namespace Api.Gateway
 {
@@ -42,24 +44,6 @@ namespace Api.Gateway
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        // Add the access_token as a claim, as we may actually need it
-                        var accessToken = context.SecurityToken as JwtSecurityToken;
-                        if (accessToken != null)
-                        {
-                            ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
-                            if (identity != null)
-                            {
-                                identity.AddClaim(new Claim("access_token", accessToken.RawData));
-                            }
-                        }
-
-                        return Task.CompletedTask;
-                    }
-                };
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
@@ -73,7 +57,19 @@ namespace Api.Gateway
                 };
             });
 
+            services.AddOcelot();
+
             services.AddMvc();
+
+            // Add cors and create Policy with options
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials() );
+            });
 
             services.AddOptions();
         }
@@ -85,6 +81,8 @@ namespace Api.Gateway
             loggerFactory.AddDebug(LogLevel.Trace);
 
             app.UseCors("CorsPolicy");
+
+            app.UseOcelot().Wait();
 
             app.UseAuthentication();
 

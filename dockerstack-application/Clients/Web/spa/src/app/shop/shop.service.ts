@@ -3,19 +3,17 @@ import {Http, Headers, RequestOptions, Response} from "@angular/http";
 import {AuthenticationService} from "../core/security/authentication.service";
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
-import {ServerConfigurationService} from "../core/server-configuration.service";
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export class ShopService {
 
   private http: Http;
   private authService: AuthenticationService;
-  private serverConfig: ServerConfigurationService;
 
-  constructor(http: Http, authService: AuthenticationService, serverConfig: ServerConfigurationService) {
+  constructor(http: Http, authService: AuthenticationService) {
     this.http = http;
     this.authService = authService;
-    this.serverConfig = serverConfig;
   }
 
   getProducts() : Observable<any> {
@@ -23,7 +21,7 @@ export class ShopService {
     let headers = new Headers({ 'Authorization': 'Bearer ' + this.authService.token });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.get(this.serverConfig.catalogServer + '/api/products', options)
+    return this.http.get(environment.settings.catalog_gateway+ '/api/products', options)
       .map((response: Response) => response.json());
   }
 }

@@ -1,7 +1,7 @@
 version: '3.2'
 services:
     auth:
-        image: localhost:5000/sandhaka/mymicsapp_auth
+        image: sandhaka/mymicsapp_auth
         command: dotnet run --rm
         ports:
             - "5005:443"
@@ -17,10 +17,10 @@ services:
             options:
                 tag: auth                    
     orders:
-        image: localhost:5000/sandhaka/mymicsapp_orders
+        image: sandhaka/mymicsapp_orders
         command: dotnet run --rm
         ports:
-            - "9000:443"
+            - "9000:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Production"          
             CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.ordersDb; User Id=sa; Password=Password&1"
@@ -34,10 +34,10 @@ services:
             options:
                 tag: orders                               
     catalog:
-        image: localhost:5000/sandhaka/mymicsapp_catalog
+        image: sandhaka/mymicsapp_catalog
         command: dotnet run --rm
         ports:
-            - "9001:443"
+            - "9001:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Production"          
             CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.catalogDb; User Id=sa; Password=Password&1"
@@ -51,10 +51,10 @@ services:
             options:
                 tag: catalog                               
     basket:
-        image: localhost:5000/sandhaka/mymicsapp_basket
+        image: sandhaka/mymicsapp_basket
         command: dotnet run --rm
         ports:
-          - "9002:443"
+          - "9002:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Production"          
             REDIS_CONNECTION: "redis_data"
@@ -96,7 +96,7 @@ services:
             options:
                 tag: redis.data           
     web_spa:
-        image: localhost:5000/sandhaka/mymicsapp_webspa
+        image: sandhaka/mymicsapp_webspa:deploy
         ports:
             - "443:443"
         volumes:
@@ -108,7 +108,21 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: web.spa          
+                tag: web.spa   
+    api_gw:
+        image: sandhaka/mymicsapp_apigw
+        ports:
+          - "3000:443"   
+        volumes:
+            - nginx.logs.vol:/var/log/nginx
+        networks:
+          - mymsc_network   
+        deploy:
+          replicas: 1
+        logging:
+            driver: "fluentd"
+            options:
+                tag: web.spa                               
 
 volumes:
     sql_data.vol:

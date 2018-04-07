@@ -4,6 +4,6 @@ FROM microsoft/aspnetcore:2.0.3
 WORKDIR /app
 COPY bin/Debug/netcoreapp2.0/publish /app
 
-EXPOSE 80
+EXPOSE 443
 
-ENTRYPOINT /bin/bash -c "dotnet Orders.Application.dll"
+ENTRYPOINT /bin/bash -c "dotnet Api.Gateway.dll"

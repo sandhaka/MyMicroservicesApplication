@@ -2,21 +2,23 @@ version: '3.2'
 services:
     auth:
         build: ./Services/AuthService
-        image: localhost:5000/sandhaka/mymicsapp_auth
+        image: sandhaka/mymicsapp_auth
         command: dotnet run --rm
         ports:
             - "5005:443"
         environment:
+            ASPNETCORE_ENVIRONMENT: "Development"
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.identityDb; User Id=sa; Password=Password&1"
         depends_on:
             - sql.data
     orders:
         build: ./Services/Orders/Orders.Application
-        image: localhost:5000/sandhaka/mymicsapp_orders
+        image: sandhaka/mymicsapp_orders
         command: dotnet run --rm
         ports:
-            - "9000:443"
+            - "9000:80"
         environment:
+            ASPNETCORE_ENVIRONMENT: "Development"
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.ordersDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis.data"
         depends_on:
@@ -24,11 +26,12 @@ services:
             - redis.data
     catalog:
         build: ./Services/Catalog/Catalog.Application
-        image: localhost:5000/sandhaka/mymicsapp_catalog
+        image: sandhaka/mymicsapp_catalog
         command: dotnet run --rm
         ports:
-            - "9001:443"
+            - "9001:80"
         environment:
+            ASPNETCORE_ENVIRONMENT: "Development"
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.catalogDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis.data"
         depends_on:
@@ -36,11 +39,12 @@ services:
             - redis.data
     basket:
         build: ./Services/Basket/Basket.Application
-        image: localhost:5000/sandhaka/mymicsapp_basket
+        image: sandhaka/mymicsapp_basket
         command: dotnet run --rm
         ports:
-          - "9002:443"
+          - "9002:80"
         environment:
+            ASPNETCORE_ENVIRONMENT: "Development"
             REDIS_CONNECTION: "redis.data"
         depends_on:
           - redis.data
@@ -58,9 +62,20 @@ services:
         ports:
             - "6379:6379"
     web_spa:
-        build: ./Clients/Web/spa
-        image: localhost:5000/sandhaka/mymicsapp_webspa
+        build: 
+            context: ./Clients/Web/spa
+            args: 
+                ENV: ${ENV}
+        image: sandhaka/mymicsapp_webspa:${ENV}
         ports:
             - "443:443"
         volumes:
             - $HOME/mymicsapp/nginx-logs:/var/log/nginx
+    api_gw:
+        build: ./Services/Gateway/Api.Gateway
+        image: sandhaka/mymicsapp_apigw
+        environment:
+            ASPNETCORE_ENVIRONMENT: "Development"
+        command: dotnet run --rm
+        ports:
+          - "3000:443"

@@ -2,14 +2,14 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from "@angular/http";
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import {ServerConfigurationService} from "../server-configuration.service";
 import {UtilityService} from "../utils.service";
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class AuthenticationService {
   public token: string;
 
-  constructor(private http: Http, private serverConfig: ServerConfigurationService) {
+  constructor(private http: Http) {
     // set token if saved in local storage
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -28,7 +28,7 @@ export class AuthenticationService {
 
     let body = `username=${username}&password=${password}`;
 
-    return this.http.post(this.serverConfig.authServer + '/api/token', body,{headers:headers})
+    return this.http.post(environment.settings.auth_gateway + '/api/token', body,{headers:headers})
       .map((response: Response) => {
         // login successful if there's a jwt token in the response
         let token = response.json() && response.json().access_token;
@@ -95,7 +95,7 @@ export class AuthenticationService {
     let headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.get(this.serverConfig.authServer + '/api/tokenrenew', options)
+    return this.http.get(environment.settings.auth_gateway + '/api/tokenrenew', options)
       .map((response: Response) => {
 
         let token = response.json() && response.json().access_token;

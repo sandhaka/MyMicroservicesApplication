@@ -4,6 +4,6 @@ FROM microsoft/aspnetcore:2.0.3
 WORKDIR /app
 COPY bin/Debug/netcoreapp2.0/publish /app
 
-EXPOSE 443
+EXPOSE 80
 
 ENTRYPOINT /bin/bash -c "dotnet Catalog.Application.dll"

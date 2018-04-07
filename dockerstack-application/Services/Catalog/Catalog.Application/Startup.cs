@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -99,7 +98,7 @@ namespace Catalog.Application
                         .AllowCredentials() );
             });
 
-                        // Take Redis connection string from environment varible by default
+            // Take Redis connection string from environment varible by default
             var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION");
             // Otherwise take from the local configuration
             if (string.IsNullOrEmpty(redisConnectionString))
@@ -121,10 +120,6 @@ namespace Catalog.Application
             services.AddAWSService<IAmazonSimpleNotificationService>(); /* Amazon SNS */
             services.AddAWSService<IAmazonSQS>(); /* Amazon SQS */
             services.AddSingleton<IConfiguration>(Configuration); /* Make project configuration available */
-            
-            // Add https features
-            services.Configure<MvcOptions>(options =>
-                options.Filters.Add(new RequireHttpsAttribute()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -135,11 +130,7 @@ namespace Catalog.Application
 
             app.UseCors("CorsPolicy");
 
-            app.UseAuthentication();                  
-
-            var options = new RewriteOptions()
-                .AddRedirectToHttps();
-            app.UseRewriter(options);
+            app.UseAuthentication();
             
             ConfigureEventBus(app);
 

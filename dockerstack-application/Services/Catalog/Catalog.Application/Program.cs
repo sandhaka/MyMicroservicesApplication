@@ -33,14 +33,10 @@ namespace Catalog.Application
             WebHost.CreateDefaultBuilder(args)
             .UseKestrel(options =>
             {
-                options.Listen(IPAddress.Any, 443, listenOptions =>
-                {
-                    listenOptions.UseHttps("certificate/dev.boltjwt.pfx", File.ReadAllText("certificate/dev.boltjwt.passphrase"));
-                });
+                options.Listen(IPAddress.Any, 80);
             })
             .UseContentRoot(Directory.GetCurrentDirectory())
             .UseIISIntegration()
-            .UseUrls("https://*:443")
             .UseStartup<Startup>()
             .Build();
     }

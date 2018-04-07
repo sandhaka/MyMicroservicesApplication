@@ -6,14 +6,11 @@ This project contains several implementation examples of habitual patterns to bu
 I took much inspiration from the [.Net Microservices Architecture eBook](https://www.microsoft.com/net/download/thank-you/microservices-architecture-ebook).
 Contains examples about Domain-Driven-Design, S.O.L.I.D. and CQRS patterns.
 
-![alt text](http://turnoff.us/image/en/monolith-retirement.png)
+![alt text](https://ibb.co/niHjRc)
 
 ##### Requirements:
-For each aspnet core service you may need to restore packages:
-```sh
-$ dotnet restore
-```
-And build/publish the project:
+
+Build/publish the project:
 ```sh
 $ dotnet publish
 ```
@@ -44,23 +41,34 @@ Setup AWS credentials into a file \aws.dev\credentials for all the *.Application
 
 See the [AWS Docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html).
 
+##### TODOS:
+
+Note that the api urls are not yet customizable, you may be have to edit the urls in the gateway service!
+
 ##### How to build and run the solution:
+
+> To use the stack I used three docker nodes:
+> - 192.168.104.101: Manager/worker
+> - 192.168.104.100: worker
+> - 192.168.104.103: worker
+
+> The network is in the mesh mode
+
 Using compose:
 ```sh
-$ docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
+$ ENV=<dev|prod|deploy> docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
 ```
 Using Docker swarm:
->Warning: I'm using a local registry to manage the images, create your own registry and bind it to :5000 to work with the docker-stack files or edit the stack configuration
 
 Deploy all services to a docker swarm with a logs analyzer stack (Deploy the system stack first):
 ```sh
-$ docker stack deploy -c dockerstack-system/docker-stack.yml
+$ docker stack deploy -c dockerstack-system/docker-stack.yml <stack-name>
 ```
 ```sh
-$ docker stack deploy -c dockerstack-application/docker-stack.yml
+$ docker stack deploy -c dockerstack-application/docker-stack.yml <stack-name>
 ```
 
-Navigate to http://your-docker-host-name-or-ip/
+Navigate to https://your-docker-host-name-or-ip/
 
 ##### Authentication:
 I used Json Web Token with public/private key signature (RSA256) to keep the users authenticated [RFC doc](https://tools.ietf.org/html/rfc7519).
