@@ -2,7 +2,7 @@ version: '3.2'
 services:
   fluentd:
     build: ./fluentd
-    image: localhost:5000/sandhaka/mymicsapp_fluentd
+    image: sandhaka/mymicsapp_fluentd
     ports:
       - "24224:24224"
       - "24224:24224/udp"
