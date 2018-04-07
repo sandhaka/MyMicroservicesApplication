@@ -6,7 +6,7 @@ This project contains several implementation examples of habitual patterns to bu
 I took much inspiration from the [.Net Microservices Architecture eBook](https://www.microsoft.com/net/download/thank-you/microservices-architecture-ebook).
 Contains examples about Domain-Driven-Design, S.O.L.I.D. and CQRS patterns.
 
-![alt text](https://raw.githubusercontent.com/sandhaka/MyMicroservicesApplication/master/MyMicroservicesApp.png)
+![alt text](https://github.com/sandhaka/MyMicroservicesApplication/blob/master/MyMicroservicesApp.png)
 
 ##### Requirements:
 
