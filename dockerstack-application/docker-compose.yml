@@ -9,45 +9,55 @@ services:
         environment:
             ASPNETCORE_ENVIRONMENT: "Development"
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.identityDb; User Id=sa; Password=Password&1"
+            CERT_NAME: "/var/certs/dev.boltjwt.pfx"
+            CERT_PWD_NAME: "/var/certs/dev.boltjwt.passphrase"
         depends_on:
             - sql.data
+        volumes:
+            - ./certificates:/var/certs            
     orders:
         build: ./Services/Orders/Orders.Application
         image: sandhaka/mymicsapp_orders
         command: dotnet run --rm
-        ports:
-            - "9000:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Development"
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.ordersDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis.data"
+            CERT_NAME: "/var/certs/dev.boltjwt.pfx"
+            CERT_PWD_NAME: "/var/certs/dev.boltjwt.passphrase"
         depends_on:
             - sql.data
             - redis.data
+        volumes:
+            - ./certificates:/var/certs            
     catalog:
         build: ./Services/Catalog/Catalog.Application
         image: sandhaka/mymicsapp_catalog
         command: dotnet run --rm
-        ports:
-            - "9001:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Development"
             CONNECTION_STRING: "Server=sql.data,1433; Initial Catalog=mymicsapp.Services.catalogDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis.data"
+            CERT_NAME: "/var/certs/dev.boltjwt.pfx"
+            CERT_PWD_NAME: "/var/certs/dev.boltjwt.passphrase"            
         depends_on:
             - sql.data
             - redis.data
+        volumes:
+            - ./certificates:/var/certs            
     basket:
         build: ./Services/Basket/Basket.Application
         image: sandhaka/mymicsapp_basket
         command: dotnet run --rm
-        ports:
-          - "9002:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Development"
             REDIS_CONNECTION: "redis.data"
+            CERT_NAME: "/var/certs/dev.boltjwt.pfx"
+            CERT_PWD_NAME: "/var/certs/dev.boltjwt.passphrase"               
         depends_on:
-          - redis.data
+            - redis.data
+        volumes:
+            - ./certificates:/var/certs            
     sql.data:
         image: microsoft/mssql-server-linux
         environment:
@@ -59,13 +69,14 @@ services:
             - "1433:1433"
     redis.data:
         image: redis
-        ports:
-            - "6379:6379"
     web_spa:
         build: 
             context: ./Clients/Web/spa
             args: 
                 ENV: ${ENV}
+                CERT_NAME: "dev.boltjwt.crt"
+                CERT_PWD_NAME: "dev.boltjwt.passphrase"  
+                CERT_KEY_NAME: "dev.boltjwt.key"
         image: sandhaka/mymicsapp_webspa:${ENV}
         ports:
             - "443:443"
@@ -76,6 +87,10 @@ services:
         image: sandhaka/mymicsapp_apigw
         environment:
             ASPNETCORE_ENVIRONMENT: "Development"
+            CERT_NAME: "/var/certs/dev.boltjwt.pfx"
+            CERT_PWD_NAME: "/var/certs/dev.boltjwt.passphrase"            
         command: dotnet run --rm
         ports:
-          - "3000:443"
+            - "3000:443"
+        volumes:
+            - ./certificates:/var/certs

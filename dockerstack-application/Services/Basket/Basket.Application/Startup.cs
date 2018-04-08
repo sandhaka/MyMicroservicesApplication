@@ -54,10 +54,21 @@ namespace Basket.Application
                         .AllowAnyHeader()
                         .AllowCredentials() );
             });
-            
+
+            var certName = Environment.GetEnvironmentVariable("CERT_NAME");
+            var certPwdName = Environment.GetEnvironmentVariable("CERT_PWD_NAME");
+
+            var certPath = File.Exists(certName)
+                ? certName
+                : "/run/secrets/cert";
+
+            var certPwdPath = File.Exists(certPwdName)
+                ? certPwdName
+                : "/run/secrets/cert_pwd";
+
             // Setup Token validation
-            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
-            var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
+            var prvtKeyPassphrase = File.ReadAllText(certPwdPath);
+            var publicKey = new X509Certificate2(certPath, prvtKeyPassphrase).GetRSAPublicKey();
             
             services.AddAuthentication(options =>
             {

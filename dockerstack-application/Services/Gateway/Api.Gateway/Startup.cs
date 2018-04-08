@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
-using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,9 +31,20 @@ namespace Api.Gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var certName = Environment.GetEnvironmentVariable("CERT_NAME");
+            var certPwdName = Environment.GetEnvironmentVariable("CERT_PWD_NAME");
+
+            var certPath = File.Exists(certName)
+                ? certName
+                : "/run/secrets/cert";
+
+            var certPwdPath = File.Exists(certPwdName)
+                ? certPwdName
+                : "/run/secrets/cert_pwd";
+
             // Setup Token validation
-            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
-            var publicKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPublicKey();
+            var prvtKeyPassphrase = File.ReadAllText(certPwdPath);
+            var publicKey = new X509Certificate2(certPath, prvtKeyPassphrase).GetRSAPublicKey();
 
             services.AddAuthentication(options =>
             {

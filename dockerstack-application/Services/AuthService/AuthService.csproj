@@ -19,12 +19,6 @@
     <ProjectReference Include="..\..\EcosystemBlocks\WebHostCustomization\WebHost.Customization\WebHost.Customization.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="certificate\**\*.*">
-      <Link>certificate\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Controllers" />
   </ItemGroup>
 </Project>

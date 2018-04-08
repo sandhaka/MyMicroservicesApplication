@@ -37,9 +37,20 @@ namespace AuthService
         .UseContentRoot(Directory.GetCurrentDirectory())
         .UseKestrel(options =>
         {
+            var certName = Environment.GetEnvironmentVariable("CERT_NAME");
+            var certPwdName = Environment.GetEnvironmentVariable("CERT_PWD_NAME");
+
+            var certPath = File.Exists(certName)
+                ? certName
+                : "/run/secrets/cert";
+
+            var certPwdPath = File.Exists(certPwdName)
+                ? certPwdName
+                : "/run/secrets/cert_pwd";
+
             options.Listen(IPAddress.Any, 443, listenOptions =>
             {
-                listenOptions.UseHttps("certificate/dev.boltjwt.pfx", File.ReadAllText("certificate/dev.boltjwt.passphrase"));
+                listenOptions.UseHttps(certPath, File.ReadAllText(certPwdPath));
             });
         }).Build();
     }
