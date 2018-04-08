@@ -5,7 +5,7 @@ services:
         command: dotnet run --rm
         ports:
             - "5005:443"
-        environment:
+        environment:  
             ASPNETCORE_ENVIRONMENT: "Production"          
             CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.identityDb; User Id=sa; Password=Password&1"
         networks:
@@ -15,13 +15,14 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: auth                    
+                tag: auth        
+        secrets:    
+            - cert
+            - cert_pwd                               
     orders:
         image: sandhaka/mymicsapp_orders
         command: dotnet run --rm
-        ports:
-            - "9000:80"
-        environment:
+        environment:  
             ASPNETCORE_ENVIRONMENT: "Production"          
             CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.ordersDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis_data"
@@ -32,13 +33,14 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: orders                               
+                tag: orders        
+        secrets:    
+            - cert
+            - cert_pwd                                          
     catalog:
         image: sandhaka/mymicsapp_catalog
         command: dotnet run --rm
-        ports:
-            - "9001:80"
-        environment:
+        environment: 
             ASPNETCORE_ENVIRONMENT: "Production"          
             CONNECTION_STRING: "Server=sql_data,1433; Initial Catalog=mymicsapp.Services.catalogDb; User Id=sa; Password=Password&1"
             REDIS_CONNECTION: "redis_data"
@@ -49,12 +51,13 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: catalog                               
+                tag: catalog                   
+        secrets:    
+            - cert
+            - cert_pwd                               
     basket:
         image: sandhaka/mymicsapp_basket
         command: dotnet run --rm
-        ports:
-          - "9002:80"
         environment:
             ASPNETCORE_ENVIRONMENT: "Production"          
             REDIS_CONNECTION: "redis_data"
@@ -65,7 +68,10 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: basket                            
+                tag: basket     
+        secrets:    
+            - cert
+            - cert_pwd                                          
     sql_data:
         image: microsoft/mssql-server-linux
         environment:
@@ -73,8 +79,6 @@ services:
             SA_PASSWORD: "Password&1"
         volumes:
             - sql_data.vol:/var/opt/mssql
-        ports:
-            - "1433:1433"
         networks:
           - mymsc_network      
         deploy:
@@ -85,8 +89,6 @@ services:
                 tag: sql.data                           
     redis_data:
         image: redis
-        ports:
-            - "6379:6379"
         networks:
           - mymsc_network               
         deploy:
@@ -96,7 +98,7 @@ services:
             options:
                 tag: redis.data           
     web_spa:
-        image: sandhaka/mymicsapp_webspa:deploy
+        image: sandhaka/mymicsapp_webspa:deploy      
         ports:
             - "443:443"
         volumes:
@@ -108,9 +110,11 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: web.spa   
+                tag: web.spa                   
     api_gw:
         image: sandhaka/mymicsapp_apigw
+        environment: 
+            ASPNETCORE_ENVIRONMENT: "Production"                 
         ports:
           - "3000:443"   
         volumes:
@@ -122,7 +126,10 @@ services:
         logging:
             driver: "fluentd"
             options:
-                tag: web.spa                               
+                tag: web.spa  
+        secrets:    
+            - cert
+            - cert_pwd                             
 
 volumes:
     sql_data.vol:
@@ -130,3 +137,9 @@ volumes:
 
 networks: 
     mymsc_network:
+
+secrets:
+    cert: 
+        file: ./certificates/dev.boltjwt.pfx
+    cert_pwd:
+        file: ./certificates/dev.boltjwt.passphrase

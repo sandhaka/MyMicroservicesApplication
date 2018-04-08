@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   settings: {
     auth_gateway: "https://docker-host:5005",
     orders_gateway: "https://docker-host:3000",

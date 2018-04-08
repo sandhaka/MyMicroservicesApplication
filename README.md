@@ -1,8 +1,8 @@
-ASP.NET Core / Docker / SPA - Microservices oriented application example
+Microservices oriented application example
 ---
 
 ### Intro 
-This project contains several implementation examples of habitual patterns to build a microservices oriented application with asp.NET core, Docker and Angular.
+This project contains several implementation examples of habitual patterns to build a microservices oriented application with ASP.NET core, Docker and Angular.
 I took much inspiration from the [.Net Microservices Architecture eBook](https://www.microsoft.com/net/download/thank-you/microservices-architecture-ebook).
 Contains examples about Domain-Driven-Design, S.O.L.I.D. and CQRS patterns.
 
@@ -10,57 +10,41 @@ Contains examples about Domain-Driven-Design, S.O.L.I.D. and CQRS patterns.
 
 ##### Requirements:
 
-Build/publish the project:
+Build/publish the NET projects:
 ```sh
 $ dotnet publish
 ```
-You have to generate a private/public keys for JWT:
-```sh
-openssl genrsa -des3 -out private.pem 2048
-```
-```sh
-openssl rsa -in private.pem -outform PEM -pubout -out public.pem
-```
+You have to generate the certificates, the system needs the certificates in the following positions:
+- dockerstack-application/certificates folder: a .pfx certificate and a text file with the password
+- dockerstack-application/Clients/Web/spa/certificate folder: a .crt certificate, the private key file and a text file with the password used by Nginx
+> Use the environment variables in the docker configurations file to edit the certificates file name
 
-Place the private and public keys in the 'keys' folder of the services (All the *.Application and AuthService projects).
-The private key is needed only by the authorization service.
+See this [link](https://rietta.com/blog/2012/01/27/openssl-generating-rsa-key-from-command/) for more info about certificates generation.
 
-See this [link](https://rietta.com/blog/2012/01/27/openssl-generating-rsa-key-from-command/) for more info.
+See this [link](https://www.ssl.com/how-to/create-a-pfx-p12-certificate-file-using-openssl/) for more info about the .pfx format.
 
-Generate the HTTPS certificate for Kestrel:
-```sh
-openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt
-```
-And put them into the "certificate" folder of the services (All the *.Application projects and AuthService projects).
+Install this certificates in your dev computer or allow them on demand.
 
-See this [link](https://www.ssl.com/how-to/create-a-pfx-p12-certificate-file-using-openssl/) for more info.
-
-Install this certificate in your dev computer.
-
-Setup AWS credentials into a file \aws.dev\credentials for all the *.Application projects. 
+Setup AWS credentials into a file \aws.dev\credentials for all the orders, catalog and basket projects. 
 
 See the [AWS Docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html).
 
-##### TODOS:
-
-Note that the api urls are not yet customizable, you may be have to edit the urls in the gateway service!
-
 ##### How to build and run the solution:
-
-> To use the stack I used three docker nodes:
-> - 192.168.104.101: Manager/worker
-> - 192.168.104.100: worker
-> - 192.168.104.103: worker
-
-> The network is in the mesh mode
-
-Using compose:
+With docker-compose, build and run:
 ```sh
-$ ENV=<dev|prod|deploy> docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml build
+$ ENV=prod docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml up --build
 ```
-Using Docker swarm:
+> The ENV variable is set to build the angular project correctly:
+> - 'dev' is the standard angular cli building to debug the project locally
+> - 'prod' use a "docker-host" name to resolve the api host name
+> - 'deploy' use the "docker-host-3" name to resolve the api host name in swarm mode, that host is one of my docker nodes
+> Then, customize your system hosts file to setup the DNS resolution or edit the source files
 
-Deploy all services to a docker swarm with a logs analyzer stack (Deploy the system stack first):
+Using Docker swarm:
+```sh
+$ ENV=prod docker-compose -f <dockerstack-to-build>/<docker-compose-file-name>.yml up --build
+```
+Deploy all services to a docker swarm with a logs analyzer stack (Important: Deploy the system stack first):
 ```sh
 $ docker stack deploy -c dockerstack-system/docker-stack.yml <stack-name>
 ```
@@ -80,11 +64,11 @@ This strategy seems acceptable for a web application.
 Initial incpit from this [discussion](https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration/26834685#26834685).
 
 ##### Databases:
-I using Ms SQL to keep users informations running on the 'db' container with a mapping volume on the host machine.
+I'm using Ms SQL to keep users informations running on the 'db' container with a mapping volume on the host machine.
 
 dotnet-ef migrations to database versioning.
 
-To store basket and integration event instance and handlers processing status informations, I using a [redis](https://hub.docker.com/_/redis/) server.
+To store basket and integration event instance and handlers processing status informations, I'm using a [redis](https://hub.docker.com/_/redis/) server.
 
 ##### Notes about the frontend:
 The frontend is a single page application built by angular-cli, I changed the ng serve command in the package.json file to accept two configuration:

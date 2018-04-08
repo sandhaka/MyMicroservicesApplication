@@ -15,9 +15,20 @@ namespace AuthService
         private void ConfigureTokenProviderMiddleware(IApplicationBuilder app, IServiceProvider services)
         {
             var userRepository = services.GetRequiredService<IUserRepository>();
-            
-            var prvtKeyPassphrase = File.ReadAllText("certificate/dev.boltjwt.passphrase");
-            var privateKey = new X509Certificate2("certificate/dev.boltjwt.pfx", prvtKeyPassphrase).GetRSAPrivateKey();
+
+            var certName = Environment.GetEnvironmentVariable("CERT_NAME");
+            var certPwdName = Environment.GetEnvironmentVariable("CERT_PWD_NAME");
+
+            var certPath = File.Exists(certName)
+                ? certName
+                : "/run/secrets/cert";
+
+            var certPwdPath = File.Exists(certPwdName)
+                ? certPwdName
+                : "/run/secrets/cert_pwd";
+
+            var prvtKeyPassphrase = File.ReadAllText(certPwdPath);
+            var privateKey = new X509Certificate2(certPath, prvtKeyPassphrase).GetRSAPrivateKey();
 
             // Setup Token provider
             var tokenProviderOptions = new TokenProviderOptions()
