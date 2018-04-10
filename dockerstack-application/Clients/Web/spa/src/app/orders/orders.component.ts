@@ -157,7 +157,7 @@ export class OrdersComponent implements OnInit {
     this.orderCommandDto.cardHolderName = formData.cardHolderName;
     this.orderCommandDto.cardSecurityNumber = formData.cardSecurityNumber;
 
-    this.ordersService.placeOrder(this.orderCommandDto).subscribe((response: Response) => {
+    this.ordersService.placeOrder(this.orderCommandDto).subscribe((response: any) => {
         if(response.ok) {
           this.orderSubmitted = true;
         }

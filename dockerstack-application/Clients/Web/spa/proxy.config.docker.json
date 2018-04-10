@@ -1,24 +1,12 @@
 {
   "/api/token": {
-    "target": "https://192.168.104.100:5000",
+    "target": "https://docker-host:5005",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
-  "/api/products/*": {
-    "target": "https://192.168.104.100:9001",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  },
-  "/api/basket/*": {
-    "target": "https://192.168.104.100:9002",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  },
-  "/api/orders/*": {
-    "target": "https://192.168.104.103:3000",
+  "/api/*": {
+    "target": "https://docker-host:3000",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

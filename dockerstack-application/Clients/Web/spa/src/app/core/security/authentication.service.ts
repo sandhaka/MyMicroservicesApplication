@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from "@angular/http";
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import {UtilityService} from "../utils.service";
 import {environment} from "../../../environments/environment";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Injectable()
 export class AuthenticationService {
   public token: string;
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     // set token if saved in local storage
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
@@ -23,15 +23,20 @@ export class AuthenticationService {
    */
   login(username: string, password: string): Observable<boolean> {
 
-    let headers: Headers = new Headers();
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    // Adding an http header for content type
+    const httpOptions = {
+     headers: new HttpHeaders({
+       'Content-Type': 'application/x-www-form-urlencoded'
+     })
+    };
 
     let body = `username=${username}&password=${password}`;
 
-    return this.http.post(environment.settings.auth_gateway + '/api/token', body,{headers:headers})
-      .map((response: Response) => {
+    return this.http.post(environment.settings.auth_gateway + '/api/token', body, httpOptions)
+      .map((response) => {
         // login successful if there's a jwt token in the response
-        let token = response.json() && response.json().access_token;
+        let token = response["access_token"];
+
         if (token) {
           this.storeToken(token);
           // return true to indicate successful login
@@ -55,7 +60,7 @@ export class AuthenticationService {
    */
   tokenCheck() : boolean {
 
-    var storedToken = localStorage.getItem('currentUser');
+    const storedToken = localStorage.getItem('currentUser');
 
     if(this.token && storedToken !== null) {
 
@@ -63,7 +68,7 @@ export class AuthenticationService {
 
       // If the token is going to expire in less of a day renew it
       if(tokenData.exp > Date.now() &&
-        tokenData.exp < Date.now() + 86400) {
+        tokenData.exp < (Date.now() + 86400000)) {
 
         this.tokenRenew().subscribe((result) => {
           if(!result) {
@@ -92,13 +97,10 @@ export class AuthenticationService {
    */
   private tokenRenew() : Observable<boolean> {
 
-    let headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    let options = new RequestOptions({ headers: headers });
+    return this.http.get(environment.settings.auth_gateway + '/api/tokenrenew')
+      .map((response) => {
 
-    return this.http.get(environment.settings.auth_gateway + '/api/tokenrenew', options)
-      .map((response: Response) => {
-
-        let token = response.json() && response.json().access_token;
+        let token = response["access_token"];
 
         if (token) {
           this.storeToken(token);

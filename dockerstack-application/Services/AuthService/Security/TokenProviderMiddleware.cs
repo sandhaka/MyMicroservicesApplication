@@ -73,7 +73,7 @@ namespace AuthService.Security
             var response = new
             {
                 access_token = encodedJwt,
-                expires_in = (int)opts.Expiration.TotalSeconds
+                expires_in = (int)opts.Expiration.TotalMilliseconds
             };
 
             // Serialize and return the response
