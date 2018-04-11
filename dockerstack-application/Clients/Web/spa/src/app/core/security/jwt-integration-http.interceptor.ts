@@ -2,6 +2,7 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/com
 import {Injectable, Injector} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {AuthenticationService} from "./authentication.service";
+import {UtilityService} from "../utils.service";
 
 /**
  * Add jwt in every http request
@@ -18,7 +19,8 @@ export class JwtIntegrationHttpInterceptor implements HttpInterceptor {
     if(auth.token) {
       req = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${auth.token}`
+          Authorization: `Bearer ${auth.token}`,
+          RequestId: UtilityService.newGuid()
         }
       });
     }
